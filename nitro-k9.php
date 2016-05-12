@@ -27,6 +27,8 @@
  */
 
 require_once ( 'classes/NitroK9/Controller.php' );
+require_once ( 'classes/NitroK9/PriceGroup.php' );
+require_once ( 'classes/NitroK9/Price.php' );
 
 $controller = new \NitroK9\Controller;
 
@@ -36,14 +38,11 @@ register_activation_hook( __FILE__, array( $controller, 'activate' ) );
 /* enqueue js and css */
 add_action( 'init', array( $controller, 'init' ) );
 
-/* Create custom post type */
-add_action( 'init', array( $controller, 'create_post_type' ) );
-
 /* capture form post */
 add_action ( 'init', array( $controller, 'form_capture' ) );
 
 /* register shortcode */
-add_shortcode ( 'nitro_forms', array( $controller, 'short_code' ) );
+add_shortcode ( 'nitro_k9', array( $controller, 'short_code' ) );
 
 /* admin stuff */
 if (is_admin() )
@@ -57,9 +56,4 @@ if (is_admin() )
 	/* admin scripts */
 	add_action( 'admin_init', array( $controller, 'admin_scripts' ) );
 
-	/* add the instructions page link */
-	add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $controller, 'instructions_link' ) );
-
-	/* add the instructions page */
-	add_action( 'admin_menu', array( $controller, 'instructions_page' ) );
 }

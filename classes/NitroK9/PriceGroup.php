@@ -515,36 +515,48 @@ class PriceGroup {
 			{
 				foreach ( $updated_prices as $id => $updated_price )
 				{
-					if ( isset( $updated_prices['title'] ) && strlen( $updated_prices['title'] ) > 0 )
+					if ( isset( $updated_price['title'] ) && strlen( $updated_price['title'] ) > 0 )
 					{
-						$price_groups[ $id ]->setTitle( $updated_prices['title'] );
+						$price_groups[ $id ]->setTitle( $updated_price['title'] );
 					}
-					if ( isset( $updated_prices['is_active'] ) )
+					if ( isset( $updated_price['is_active'] ) )
 					{
-						$price_groups[ $id ]->setTitle( $updated_prices['is_active'] );
+						$price_groups[ $id ]->setIsActive( $updated_price['is_active'] );
 					}
-					if ( isset( $updated_prices['prices'] ) && is_array( $updated_prices['prices'] ) )
+					if ( isset( $updated_price['price'] ) )
 					{
 						/** @var Price[] $prices */
 						$prices = $price_groups[ $id ]->getPrices();
 
-						foreach ( $updated_prices['prices'] as $index => $update_price )
+						if ( array_key_exists( 0, $prices ) )
+						{
+							$prices[ 0 ]->setPrice( $updated_price['price'] );
+						}
+
+						$price_groups[ $id ]->setPrices( $prices );
+					}
+					if ( isset( $updated_price['prices'] ) && is_array( $updated_price['prices'] ) )
+					{
+						/** @var Price[] $prices */
+						$prices = $price_groups[ $id ]->getPrices();
+
+						foreach ( $updated_price['prices'] as $index => $p )
 						{
 							if ( array_key_exists( $index, $prices ) )
 							{
-								if ( isset( $updated_price['title'] ) && strlen( $updated_price['title'] ) > 0 )
+								if ( isset( $p['title'] ) && strlen( $p['title'] ) > 0 )
 								{
-									$prices[ $index ]->setTitle( $updated_price['title'] );
+									$prices[ $index ]->setTitle( $p['title'] );
 								}
 
-								if ( isset( $updated_price['price'] ) )
+								if ( isset( $p['price'] ) )
 								{
-									$prices[ $index ]->setPrice( $updated_price['price'] );
+									$prices[ $index ]->setPrice( $p['price'] );
 								}
 
-								if ( isset( $updated_price['is_active'] ) )
+								if ( isset( $p['is_active'] ) )
 								{
-									$prices[ $index ]->setIsActive( $updated_price['is_active'] );
+									$prices[ $index ]->setIsActive( $p['is_active'] );
 								}
 							}
 						}

@@ -33,6 +33,112 @@ class Controller {
 		wp_enqueue_style( 'nitro-k9-bootstrap-css', plugin_dir_url( dirname( __DIR__ ) ) . 'css/bootstrap.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
 		$this->price_groups = PriceGroup::loadPrices();
 	}
+	
+	public function custom_post_type()
+	{
+		$labels = array (
+			'name' => __( 'Thank You Emails' ),
+			'singular_name' => __( 'Thank You Email' ),
+			'add_new_item' => __( 'Add Thank You Email' ),
+			'edit_item' => __( 'Edit Thank You Email' ),
+			'new_item' => __( 'New Thank You Email' ),
+			'view_item' => __( 'View Thank You Email' ),
+			'search_items' => __( 'Search Thank You Emails' ),
+			'not_found' => __( 'No thank you emails found.' )
+		);
+
+		$args = array (
+			'labels' => $labels,
+			'hierarchical' => FALSE,
+			'description' => 'Thank You Emails',
+			'supports' => array( 'title', 'editor' ),
+			'public' => TRUE,
+			'show_ui' => TRUE,
+			'show_in_menu' => 'nitro_k9',
+			'show_in_nav_menus' => TRUE,
+			'publicly_queryable' => TRUE,
+			'exclude_from_search' => FALSE,
+			'has_archive' => TRUE
+		);
+
+		register_post_type( 'nitro_k9_ty_email', $args );
+	}
+
+	public function custom_enter_title( $input )
+	{
+		global $post_type;
+
+		if( is_admin() && 'Enter title here' == $input && 'nitro_k9_ty_email' == $post_type )
+		{
+			return 'Enter Email Subject Line';
+		}
+
+		return $input;
+	}
+
+	public function extra_ty_email_meta()
+	{
+		add_meta_box( 'nitro-k9-ty-email-meta', 'Properties', array( $this, 'extra_ty_email_fields' ), 'nitro_k9_ty_email' );
+	}
+
+	public function extra_ty_email_fields()
+	{
+		include( dirname( dirname( __DIR__ ) ) . '/includes/extra-ty-email-meta.php' );
+	}
+
+	public function save_ty_email_post()
+	{
+		global $post;
+		global $wpdb;
+
+		if ( $post !== NULL && $post->post_type == 'nitro_k9_ty_email' && isset( $_POST['ty_email_is_active'] ) )
+		{
+			$active_email = $_POST['ty_email_is_active'];
+
+			if ( $active_email == 1 )
+			{
+				$wpdb->update(
+					$wpdb->prefix . 'postmeta',
+					array (
+						'meta_value' => 0
+					),
+					array (
+						'meta_key' => 'nitro_k9_active_email'
+					),
+					array (
+						'%s'
+					),
+					array(
+						'%s'
+					)
+				);
+			}
+
+			update_post_meta( $post->ID, 'nitro_k9_active_email', $active_email );
+
+		}
+	}
+
+	public function add_new_columns( $columns )
+	{
+		$new = array(
+			'nitro_k9_active_email' => 'Active'
+		);
+		$columns = array_slice( $columns, 0, 2, TRUE ) + $new + array_slice( $columns, 2, NULL, TRUE );
+		return $columns;
+	}
+
+	public function custom_columns( $column )
+	{
+		global $post;
+
+		switch ( $column )
+		{
+			case 'nitro_k9_active_email':
+				echo ( get_post_meta( $post->ID, 'nitro_k9_active_email', TRUE ) == '1') ? 'Yes' : 'No';
+				break;
+		}
+	}
 
 	public function form_capture()
 	{

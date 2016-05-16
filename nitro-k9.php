@@ -38,6 +38,9 @@ register_activation_hook( __FILE__, array( $controller, 'activate' ) );
 /* enqueue js and css */
 add_action( 'init', array( $controller, 'init' ) );
 
+/* custom post type */
+add_action( 'init', array( $controller, 'custom_post_type' ) );
+
 /* capture form post */
 add_action ( 'init', array( $controller, 'form_capture' ) );
 
@@ -55,5 +58,12 @@ if (is_admin() )
 
 	/* admin scripts */
 	add_action( 'admin_init', array( $controller, 'admin_scripts' ) );
+
+	/* custom items for custom post type */
+	add_filter('gettext', array( $controller, 'custom_enter_title' ) );
+	add_action( 'admin_init', array( $controller, 'extra_ty_email_meta' ) );
+	add_action( 'save_post', array( $controller, 'save_ty_email_post' ) );
+	add_filter( 'manage_nitro_k9_ty_email_posts_columns', array( $controller, 'add_new_columns' ) );
+	add_action( 'manage_posts_custom_column' , array( $controller, 'custom_columns' ) );
 
 }

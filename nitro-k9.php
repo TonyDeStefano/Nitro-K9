@@ -29,6 +29,8 @@
 require_once ( 'classes/NitroK9/Controller.php' );
 require_once ( 'classes/NitroK9/PriceGroup.php' );
 require_once ( 'classes/NitroK9/Price.php' );
+require_once ( 'classes/NitroK9/Entry.php' );
+require_once ( 'classes/NitroK9/Pet.php' );
 
 $controller = new \NitroK9\Controller;
 

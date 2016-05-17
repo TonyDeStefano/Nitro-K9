@@ -20,7 +20,61 @@ class Controller {
 	 */
 	public function activate()
 	{
+
+		require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+		global $wpdb;
+		
 		add_option( self::OPTION_VERSION, self::VERSION );
+		
+		/* create the table (decided against using a custom post type for all this data) */
+
+		$charset_collate = '';
+		if ( ! empty( $wpdb->charset ) )
+		{
+			$charset_collate .= "DEFAULT CHARACTER SET " . $wpdb->charset;
+		}
+		if ( ! empty( $wpdb->collate ) )
+		{
+			$charset_collate .= " COLLATE " . $wpdb->collate;
+		}
+
+		$table = $wpdb->prefix . Entry::TABLE_NAME;
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`first_name` VARCHAR(50) DEFAULT NULL,
+					`last_name` VARCHAR(50) DEFAULT NULL,
+					`email` VARCHAR(50) DEFAULT NULL,
+					`address` VARCHAR(50) DEFAULT NULL,
+					`city` VARCHAR(50) DEFAULT NULL,
+					`state` VARCHAR(2) DEFAULT NULL,
+					`zip` VARCHAR(10) DEFAULT NULL,
+					`home_phone` VARCHAR(50) DEFAULT NULL,
+					`cell_phone` VARCHAR(50) DEFAULT NULL,
+					`work_phone` VARCHAR(50) DEFAULT NULL,
+					`em_contact` VARCHAR(50) DEFAULT NULL,
+					`em_relationship` VARCHAR(50) DEFAULT NULL,
+					`em_home_phone` VARCHAR(50) DEFAULT NULL,
+					`em_cell_phone` VARCHAR(50) DEFAULT NULL,
+					`em_work_phone` VARCHAR(50) DEFAULT NULL,
+					`how_heard` VARCHAR(50) DEFAULT NULL,
+					`pets` TEXT DEFAULT NULL,
+					`large_dogs` INT(11) DEFAULT NULL,
+					`small_dogs` INT(11) DEFAULT NULL,
+					`current_step` VARCHAR(50) DEFAULT NULL,
+					`current_pet` INT(11) DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					`completed_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`),
+					KEY `email` (`email`)
+					
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
 	}
 
 	/**

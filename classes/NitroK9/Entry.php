@@ -868,6 +868,42 @@ class Entry {
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getSmallDogCount()
+	{
+		$count = 0;
+
+		foreach ( $this->getPets() as $pet )
+		{
+			if ( $pet->getType() == Pet::TYPE_SMALL_DOG )
+			{
+				$count++;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLargeDogCount()
+	{
+		$count = 0;
+
+		foreach ( $this->getPets() as $pet )
+		{
+			if ( $pet->getType() == Pet::TYPE_LARGE_DOG )
+			{
+				$count++;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
 	 * @param Pet[] $pets
 	 *
 	 * @return Entry
@@ -1002,7 +1038,7 @@ class Entry {
 
 			case self::STEP_PET_COUNT:
 				$this
-					->setCurrentPet( 1 )
+					->setCurrentPet( 0 )
 					->setCurrentStep( self::STEP_PET_INFO );
 				break;
 
@@ -1021,6 +1057,13 @@ class Entry {
 
 			case self::STEP_PET_COUNT:
 				$this->setCurrentStep( self::STEP_BIO );
+				break;
+
+			case self::STEP_PET_INFO:
+				if ( $this->getCurrentPet() == 0 )
+				{
+					$this->setCurrentStep( self::STEP_PET_COUNT );
+				}
 				break;
 
 			default:

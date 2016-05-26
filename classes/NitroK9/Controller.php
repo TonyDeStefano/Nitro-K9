@@ -301,19 +301,22 @@ class Controller {
 				{
 					case Entry::STEP_BIO:
 
-						if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
+						if ( ! isset( $_POST['prior_step'] ) )
 						{
-							$this->addError( 'Please enter a valid email address' );
-						}
+							if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
+							{
+								$this->addError( 'Please enter a valid email address' );
+							}
 
-						if ( strlen( $_POST['first_name'] ) == 0 )
-						{
-							$this->addError( 'Please enter your first name' );
-						}
+							if ( strlen( $_POST['first_name'] ) == 0 )
+							{
+								$this->addError( 'Please enter your first name' );
+							}
 
-						if ( strlen( $_POST['last_name'] ) == 0 )
-						{
-							$this->addError( 'Please enter your last name' );
+							if ( strlen( $_POST['last_name'] ) == 0 )
+							{
+								$this->addError( 'Please enter your last name' );
+							}
 						}
 						
 						if ( $this->getErrorCount() == 0 )
@@ -340,10 +343,13 @@ class Controller {
 						break;
 					
 					case Entry::STEP_PET_COUNT:
-						
-						if ( $_POST['large_dogs'] == 0 && $_POST['small_dogs'] == 0 )
+
+						if ( ! isset( $_POST['prior_step'] ) )
 						{
-							$this->addError( 'You must enroll at least one pet to continue' );
+							if ( $_POST['large_dogs'] == 0 && $_POST['small_dogs'] == 0 )
+							{
+								$this->addError( 'You must enroll at least one pet to continue' );
+							}
 						}
 
 						if ( $this->getErrorCount() == 0 )
@@ -351,6 +357,91 @@ class Controller {
 							$entry
 								->setLargeDogs( $_POST['large_dogs'] )
 								->setSmallDogs( $_POST['small_dogs'] );
+
+							if ( count( $entry->getPets() ) == 0 )
+							{
+								for ( $x=0; $x<$entry->getLargeDogs(); $x++ )
+								{
+									$pet = new Pet;
+									$pet->setType( Pet::TYPE_LARGE_DOG );
+									$entry->addPet( $pet );
+								}
+
+								for ( $x=0; $x<$entry->getSmallDogs(); $x++ )
+								{
+									$pet = new Pet;
+									$pet->setType( Pet::TYPE_SMALL_DOG );
+									$entry->addPet( $pet );
+								}
+							}
+							else
+							{
+								/**
+								 * @var Pet[] $large_dogs
+								 * @var Pet[] $small_dogs
+								 */
+								$large_dogs = array();
+								$small_dogs = array();
+
+								foreach( $entry->getPets() as $pet )
+								{
+									if ( $pet->getType() == Pet::TYPE_LARGE_DOG )
+									{
+										$large_dogs[] = $pet;
+									}
+
+									if ( $pet->getType() == Pet::TYPE_SMALL_DOG )
+									{
+										$small_dogs[] = $pet;
+									}
+								}
+
+								if ( $entry->getLargeDogs() > count( $large_dogs ) )
+								{
+									for ( $x=count( $large_dogs ); $x<$entry->getLargeDogs(); $x++ )
+									{
+										$pet = new Pet;
+										$pet->setType( Pet::TYPE_LARGE_DOG );
+										$large_dogs[] = $pet;
+									}
+								}
+								elseif ( $entry->getLargeDogs() < count( $large_dogs ) )
+								{
+									$temp = array();
+									if ( $entry->getLargeDogs() > 0 )
+									{
+										for ( $x = 0; $x < $entry->getLargeDogs(); $x ++ )
+										{
+											$temp[] = $large_dogs[ $x ];
+										}
+									}
+									$large_dogs = $temp;
+								}
+
+								if ( $entry->getSmallDogs() > count( $small_dogs ) )
+								{
+									for ( $x=count( $small_dogs ); $x<$entry->getSmallDogs(); $x++ )
+									{
+										$pet = new Pet;
+										$pet->setType( Pet::TYPE_SMALL_DOG );
+										$small_dogs[] = $pet;
+									}
+								}
+								elseif ( $entry->getSmallDogs() < count( $small_dogs ) )
+								{
+									$temp = array();
+									if ( $entry->getSmallDogs() > 0 )
+									{
+										for ( $x = 0; $x < $entry->getSmallDogs(); $x ++ )
+										{
+											$temp[] = $small_dogs[ $x ];
+										}
+									}
+									$small_dogs = $temp;
+								}
+
+								$entry->setPets( array_merge( $large_dogs, $small_dogs ) );
+							}
 						}
 						
 						break;
@@ -366,9 +457,9 @@ class Controller {
 					{
 						$entry->priorStep();
 					}
+
+					$entry->update();
 				}
-				
-				$entry->update();
 			}
 
 			if ( $this->getErrorCount() == 0 )
@@ -380,6 +471,7 @@ class Controller {
 				}
 
 				header( 'Location:' . $page . '?' . implode( '&', $requests ) );
+				exit;
 			}
 		}
 	}

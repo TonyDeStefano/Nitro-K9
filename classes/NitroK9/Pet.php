@@ -4,6 +4,11 @@ namespace NitroK9;
 
 class Pet {
 
+	const TYPE_LARGE_DOG = 'Large Dog';
+	const TYPE_SMALL_DOG = 'Small Dog';
+	
+	private $type;
+	private $is_aggressive = FALSE;
 	private $info;
 	private $services;
 	private $aggression;
@@ -24,6 +29,16 @@ class Pet {
 			$array = json_decode( $json, TRUE );
 			if ( is_array( $array ) )
 			{
+				if ( isset( $array['is_aggressive'] ) )
+				{
+					$this->setIsAggressive( $array['is_aggressive'] );
+				}
+
+				if ( isset( $array['type'] ) )
+				{
+					$this->setType( $array['type'] );
+				}
+				
 				if ( isset( $array['info'] ) )
 				{
 					$this->info = $array['info'];
@@ -40,6 +55,46 @@ class Pet {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * @param mixed $type
+	 *
+	 * @return Pet
+	 */
+	public function setType( $type )
+	{
+		$this->type = ( $type == self::TYPE_LARGE_DOG ) ? self::TYPE_LARGE_DOG : self::TYPE_SMALL_DOG;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isAggressive()
+	{
+		return ( $this->is_aggressive === TRUE );
+	}
+
+	/**
+	 * @param boolean $is_aggressive
+	 *
+	 * @return Pet
+	 */
+	public function setIsAggressive( $is_aggressive )
+	{
+		$this->is_aggressive = ( $is_aggressive == 1 || $is_aggressive === TRUE );
+
+		return $this;
 	}
 
 	/**
@@ -159,6 +214,8 @@ class Pet {
 	public function toArray()
 	{
 		return array(
+			'type' => $this->getType(),
+			'is_aggressive' => ( $this->is_aggressive ) ? 1 : 0,
 			'info' => $this->getInfo(),
 			'services' => $this->getServices(),
 			'aggression' => $this->getAggression()

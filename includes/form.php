@@ -32,7 +32,7 @@ if ( $make_new_entry )
 
 <?php } ?>
 
-<form method="post" class="form-horizontal">
+<form method="post" class="form-horizontal nitro-k9-form">
 
 	<?php wp_nonce_field(); ?>
 	
@@ -94,10 +94,26 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'small_dogs', 'Small Dogs (< 35lbs)', $entry->getSmallDogs(), 'select', array(0,1,2,3,4,5) );
 		\NitroK9\Entry::drawFormRow( 'large_dogs', 'Large Dogs (>= 35lbs)', $entry->getLargeDogs(), 'select', array(0,1,2,3,4,5) );
+		\NitroK9\Entry::drawFormRow( 'small_dogs', 'Small Dogs (< 35lbs)', $entry->getSmallDogs(), 'select', array(0,1,2,3,4,5) );
 
 		?>
+
+	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_INFO ) { ?>
+
+		<?php $pet = $entry->getPets()[$entry->getCurrentPet()]; ?>
+
+		<h2>
+			Tell us about
+			<?php if ( $pet->getInfoItem( 'name' ) == '' ) { ?>
+				your <?php echo $pet->getType(); ?>
+				<?php if ( count( $entry->getPets() ) > 1 ) { ?>
+					( pet #<?php echo $entry->getCurrentPet()+1; ?> / <?php echo count( $entry->getPets() ); ?> )
+				<?php } ?>
+			<?php } else { ?>
+				<?php echo $pet->getInfoItem( 'name' ); ?>
+			<?php } ?>
+		</h2>
 
 	<?php } ?>
 

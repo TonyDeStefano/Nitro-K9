@@ -325,6 +325,12 @@ class Controller {
 							->setEmail( $_POST['email'] )
 							->create();
 					}
+					else
+					{
+						$entry
+							->setCurrentStep( Entry::STEP_BIO )
+							->update();
+					}
 				}
 			}
 			else

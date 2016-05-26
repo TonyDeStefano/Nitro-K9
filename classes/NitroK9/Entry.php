@@ -1029,6 +1029,11 @@ class Entry {
 				echo '<input type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';
 				break;
 
+			case 'textarea':
+
+				echo '<textarea name="' . $name . '" id="' . $uniqid . '" class="form-control">' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '</textarea>';
+				break;
+
 			default:
 
 				echo '<input name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';

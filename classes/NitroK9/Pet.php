@@ -9,6 +9,40 @@ class Pet {
 	private $aggression;
 
 	/**
+	 * Pet constructor.
+	 *
+	 * @param null $json
+	 */
+	public function __construct( $json=NULL )
+	{
+		$this->info = array();
+		$this->services = array();
+		$this->aggression = array();
+		
+		if ( $json !== NULL )
+		{
+			$array = json_decode( $json, TRUE );
+			if ( is_array( $array ) )
+			{
+				if ( isset( $array['info'] ) )
+				{
+					$this->info = $array['info'];
+				}
+
+				if ( isset( $array['services'] ) )
+				{
+					$this->info = $array['services'];
+				}
+
+				if ( isset( $array['aggression'] ) )
+				{
+					$this->info = $array['aggression'];
+				}
+			}
+		}
+	}
+
+	/**
 	 * @param $item
 	 *
 	 * @return mixed|string
@@ -48,12 +82,11 @@ class Pet {
 	{
 		if ( isset( $this->$property ) )
 		{
-			$array = json_decode( $this->$property, TRUE );
+			$array = $this->$property;
+			
+			if ( is_array( $array ) && isset( $array[ $item ] ) )
 			{
-				if ( is_array( $array ) && isset( $array[$item] ) )
-				{
-					return $array[$item];
-				}
+				return $array[ $item ];
 			}
 		}
 
@@ -65,7 +98,7 @@ class Pet {
 	 */
 	public function getInfo()
 	{
-		return $this->info;
+		return ( $this->info === NULL ) ? array() : $this->info;
 	}
 
 	/**
@@ -85,7 +118,7 @@ class Pet {
 	 */
 	public function getServices()
 	{
-		return $this->services;
+		return ( $this->services === NULL ) ? array() : $this->services;
 	}
 
 	/**
@@ -105,7 +138,7 @@ class Pet {
 	 */
 	public function getAggression()
 	{
-		return $this->aggression;
+		return ( $this->aggression === NULL ) ? array() : $this->aggression;
 	}
 
 	/**
@@ -120,4 +153,15 @@ class Pet {
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array(
+			'info' => $this->getInfo(),
+			'services' => $this->getServices(),
+			'aggression' => $this->getAggression()
+		);
+	}
 }

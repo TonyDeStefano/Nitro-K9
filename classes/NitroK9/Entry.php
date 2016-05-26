@@ -6,7 +6,10 @@ class Entry {
 
 	const TABLE_NAME = 'nitro_k9_entries';
 
-	const STEP_START = 'start';
+	const STEP_EMAIL = 'email';
+	const STEP_ENTRIES = 'entries';
+	const STEP_BIO = 'bio';
+	const STEP_PET_COUNT = 'pet_count';
 	const STEP_PET_INFO = 'pet_info';
 	const STEP_PET_SERVICES = 'pet_services';
 	const STEP_PET_AGGRESSION = 'pet_aggression';
@@ -40,6 +43,7 @@ class Entry {
 	private $large_dogs;
 	private $small_dogs;
 	private $current_step;
+	private $current_pet;
 	private $created_at;
 	private $updated_at;
 	private $completed_at;
@@ -57,12 +61,76 @@ class Entry {
 
 		$this
 			->setId( $id )
+			->setCurrentStep( self::STEP_EMAIL )
 			->read();
 	}
 
 	public function create()
 	{
 		global $wpdb;
+
+		if ( $this->email !== NULL )
+		{
+			$this
+				->setCreatedAt( time() )
+				->setUpdatedAt( $this->created_at );
+
+			$wpdb->insert(
+				$wpdb->prefix . self::TABLE_NAME,
+				array(
+					'first_name' => $this->first_name,
+					'last_name' => $this->last_name,
+					'email' => $this->email,
+					'address' => $this->address,
+					'city' => $this->city,
+					'state' => $this->state,
+					'zip' => $this->zip,
+					'home_phone' => $this->home_phone,
+					'cell_phone' => $this->cell_phone,
+					'work_phone' => $this->work_phone,
+					'em_contact' => $this->em_contact,
+					'em_relationship' => $this->em_relationship,
+					'em_home_phone' => $this->em_home_phone,
+					'em_cell_phone' => $this->em_cell_phone,
+					'em_work_phone' => $this->em_work_phone,
+					'how_heard' => $this->how_heard,
+					'pets' => $this->getPets( TRUE ),
+					'large_dogs' => $this->getLargeDogs(),
+					'small_dogs' => $this->getSmallDogs(),
+					'current_step' => self::STEP_BIO,
+					'current_pet' => $this->getCurrentPet(),
+					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%d',
+					'%d',
+					'%s',
+					'%d',
+					'%s',
+					'%s'
+				)
+			);
+
+			$this->setId( $wpdb->insert_id );
+		}
 	}
 
 	public function read()
@@ -71,18 +139,162 @@ class Entry {
 
 		if ( $this->id !== NULL )
 		{
+			$sql = $wpdb->prepare("
+				SELECT
+					*
+				FROM
+					" . $wpdb->prefix . self::TABLE_NAME . "
+				WHERE
+					id = %d",
+				$this->id
+			);
 
+			if ( $row = $wpdb->get_row( $sql ) )
+			{
+				$this->loadFromRow( $row );
+			}
+			else
+			{
+				$this->setId( NULL );
+			}
+		}
+	}
+
+	/**
+	 * @param \stdClass $row
+	 */
+	public function loadFromRow( \stdClass $row )
+	{
+		$this
+			->setId( $row->id )
+			->setFirstName( $row->first_name )
+			->setLastName( $row->last_name )
+			->setEmail( $row->email )
+			->setAddress( $row->address )
+			->setCity( $row->city )
+			->setState( $row->state )
+			->setZip( $row->zip )
+			->setHomePhone( $row->home_phone )
+			->setCellPhone( $row->cell_phone )
+			->setWorkPhone( $row->work_phone )
+			->setEmContact( $row->em_contact )
+			->setEmRelationship( $row->em_relationship )
+			->setEmHomePhone( $row->em_home_phone )
+			->setEmCellPhone( $row->em_cell_phone )
+			->setEmWorkPhone( $row->em_work_phone )
+			->setHowHeard( $row->how_heard )
+			->setLargeDogs( $row->large_dogs )
+			->setSmallDogs( $row->small_dogs )
+			->setCurrentStep( $row->current_step )
+			->setCurrentPet( $row->current_pet )
+			->setCreatedAt( $row->created_at )
+			->setUpdatedAt( $row->updated_at )
+			->setCompletedAt( $row->completed_at );
+
+		if ( strlen( $row->pets ) > 0 )
+		{
+			$pets = json_decode( $row->pets, TRUE );
+			if ( is_array( $pets ) )
+			{
+				foreach ( $pets as $pet )
+				{
+					$p = new Pet( json_encode( $pet ) );
+					$this->addPet( $p );
+				}
+			}
 		}
 	}
 
 	public function update()
 	{
 		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$this->setUpdatedAt( $this->created_at );
+
+			$wpdb->update(
+				$wpdb->prefix . self::TABLE_NAME,
+				array(
+					'first_name' => $this->first_name,
+					'last_name' => $this->last_name,
+					'email' => $this->email,
+					'address' => $this->address,
+					'city' => $this->city,
+					'state' => $this->state,
+					'zip' => $this->zip,
+					'home_phone' => $this->home_phone,
+					'cell_phone' => $this->cell_phone,
+					'work_phone' => $this->work_phone,
+					'em_contact' => $this->em_contact,
+					'em_relationship' => $this->em_relationship,
+					'em_home_phone' => $this->em_home_phone,
+					'em_cell_phone' => $this->em_cell_phone,
+					'em_work_phone' => $this->em_work_phone,
+					'how_heard' => $this->how_heard,
+					'pets' => $this->getPets( TRUE ),
+					'large_dogs' => $this->getLargeDogs(),
+					'small_dogs' => $this->getSmallDogs(),
+					'current_step' => $this->getCurrentStep(),
+					'current_pet' => $this->getCurrentPet(),
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' ),
+					'completed_at' => ( $this->getCompletedAt() === NULL ) ? NULL : $this->getCompletedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%d',
+					'%d',
+					'%s',
+					'%d',
+					'%s',
+					'%s'
+				),
+				array(
+					'%d'
+				)
+			);
+		}
 	}
 
 	public function delete()
 	{
 		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$this->setUpdatedAt( $this->created_at );
+
+			$wpdb->delete(
+				$wpdb->prefix . self::TABLE_NAME,
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+
+			$this->setId( NULL );
+		}
 	}
 
 	/**
@@ -116,7 +328,7 @@ class Entry {
 		{
 			if ( substr( $key, 0, 9 ) == 'HOW_HEARD' )
 			{
-				$return_array[] = $val;
+				$return_array[ $val ] = $val;
 			}
 		}
 
@@ -138,7 +350,7 @@ class Entry {
 	 */
 	public function setId( $id )
 	{
-		$this->id = ( is_numeric( $id ) ) ? abs( round( $id ) ) : NULL;
+		$this->id = ( is_numeric( $id ) ) ? intval( $id ) : NULL;
 
 		return $this;
 	}
@@ -458,7 +670,7 @@ class Entry {
 	 */
 	public function setHowHeard( $how_heard )
 	{
-		$this->how_heard = ( in_array( $how_heard, $this->how_heards ) ) ? $how_heard : $this->how_heards[0];
+		$this->how_heard = ( in_array( $how_heard, $this->how_heards ) ) ? $how_heard : self::HOW_HEARD_OTHER;
 
 		return $this;
 	}
@@ -519,6 +731,33 @@ class Entry {
 	public function setCurrentStep( $current_step )
 	{
 		$this->current_step = ( in_array( $current_step, $this->steps ) ) ? $current_step : $this->steps[0];
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getCurrentPet()
+	{
+		if ( $this->current_pet === NULL )
+		{
+			return ( count( $this->getPets() ) == 0 ) ? NULL : 0;
+		}
+		else
+		{
+			return ( $this->current_pet >= count( $this->getPets() ) ) ? count( $this->getPets() ) - 1 : $this->current_pet;
+		}
+	}
+
+	/**
+	 * @param mixed $current_pet
+	 *
+	 * @return Entry
+	 */
+	public function setCurrentPet( $current_pet )
+	{
+		$this->current_pet = $current_pet;
 
 		return $this;
 	}
@@ -605,10 +844,26 @@ class Entry {
 	}
 
 	/**
-	 * @return Pet[]
+	 * @param bool $as_json
+	 *
+	 * @return array|mixed|Pet[]|string|void
 	 */
-	public function getPets()
+	public function getPets( $as_json=FALSE )
 	{
+		if ( $as_json )
+		{
+			$pets = [];
+			if ( $this->pets !== NULL )
+			{
+				foreach ( $this->pets as $pet )
+				{
+					$pets[] = $pet->toArray();
+				}
+			}
+
+			return json_encode( $pets );
+		}
+
 		return ( $this->pets === NULL ) ? array() : $this->pets;
 	}
 
@@ -655,5 +910,121 @@ class Entry {
 	public function getHowHeards()
 	{
 		return $this->how_heards;
+	}
+
+	public function getHash()
+	{
+		return ( $this->created_at === NULL ) ? '' : md5( $this->created_at );
+	}
+
+	/**
+	 * @param $email
+	 *
+	 * @return Entry
+	 */
+	public static function getUnfinishedEntryFromEmail( $email )
+	{
+		global $wpdb;
+		$entry = new Entry;
+
+		$sql = $wpdb->prepare("
+			SELECT
+				*
+			FROM
+				" . $wpdb->prefix . self::TABLE_NAME . "
+			WHERE
+				email = %s",
+			$email
+		);
+
+		if ( $row = $wpdb->get_row( $sql ) )
+		{
+			$entry->loadFromRow( $row );
+		}
+		
+		return $entry;
+	}
+
+	/**
+	 * @param $name
+	 * @param $label
+	 * @param string $default_value
+	 * @param string $type
+	 * @param array $options
+	 */
+	public static function drawFormRow( $name, $label, $default_value="", $type='text', $options=array() )
+	{
+		$uniqid = uniqid();
+
+		echo '
+			<div class="form-group">
+				<label for="' . $uniqid . '" class="col-sm-3 control-label">' . $label . '</label>
+				<div class="col-sm-9">';
+
+		switch ( $type )
+		{
+			case 'select':
+
+				echo '<select name="' . $name . '" id="' . $uniqid . '" class="form-control">';
+				foreach ( $options as $key => $val )
+				{
+					$selected = ( isset( $_POST[$name] ) ) ? $_POST[$name] : $default_value;
+					echo
+						'<option value="' . htmlspecialchars( $val ) . '"' . ( ( $val == $selected ) ? ' selected' : '' ) . '>'
+						. htmlspecialchars( $key ) .
+						'</option>';
+				}
+				echo '</select>';
+				break;
+
+			case 'email':
+
+				echo '<input type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';
+				break;
+
+			default:
+
+				echo '<input name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';
+		}
+
+        echo '
+				</div>
+			</div>';
+	}
+
+	public function nextStep()
+	{
+		switch ( $this->getCurrentStep() )
+		{
+			case self::STEP_BIO:
+				$this->setCurrentStep( self::STEP_PET_COUNT );
+				break;
+
+			case self::STEP_PET_COUNT:
+				$this
+					->setCurrentPet( 1 )
+					->setCurrentStep( self::STEP_PET_INFO );
+				break;
+
+			default:
+				$this->setCurrentStep( self::STEP_BIO );
+		}
+	}
+
+	public function priorStep()
+	{
+		switch ( $this->getCurrentStep() )
+		{
+			case self::STEP_BIO:
+				$this->setCurrentStep( self::STEP_EMAIL );
+				break;
+
+			case self::STEP_PET_COUNT:
+				$this->setCurrentStep( self::STEP_BIO );
+				break;
+
+			default:
+				$this->setCurrentStep( self::STEP_BIO );
+		}
 	}
 }

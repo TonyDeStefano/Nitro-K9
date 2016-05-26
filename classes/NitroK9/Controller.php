@@ -11,9 +11,51 @@ class Controller {
 	const OPTION_VERSION = 'nitro_k9_version';
 
 	private $attributes;
+	private $errors;
 	
 	/** @var PriceGroup[] $prices */
 	public $price_groups;
+
+	/**
+	 * @return mixed
+	 */
+	public function getErrors()
+	{
+		return ( $this->errors === NULL) ? array() : $this->errors;
+	}
+
+	/**
+	 * @param $error
+	 */
+	public function addError( $error )
+	{
+		if ( $this->errors === NULL )
+		{
+			$this->errors = array();
+		}
+
+		$this->errors[] = $error;
+	}
+
+	/**
+	 * @param mixed $errors
+	 *
+	 * @return Controller
+	 */
+	public function setErrors( $errors )
+	{
+		$this->errors = $errors;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getErrorCount()
+	{
+		return ( $this->errors === NULL ) ? 0 : count( $this->errors );
+	}
 
 	/**
 	 *
@@ -44,6 +86,7 @@ class Controller {
 				CREATE TABLE `" . $table . "`
 				(
 					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`step` VARCHAR(50) DEFAULT NULL,
 					`first_name` VARCHAR(50) DEFAULT NULL,
 					`last_name` VARCHAR(50) DEFAULT NULL,
 					`email` VARCHAR(50) DEFAULT NULL,
@@ -69,7 +112,8 @@ class Controller {
 					`updated_at` DATETIME DEFAULT NULL,
 					`completed_at` DATETIME DEFAULT NULL,
 					PRIMARY KEY (`id`),
-					KEY `email` (`email`)
+					KEY `email` (`email`),
+					KEY `step` (`step`)
 					
 				)";
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
@@ -82,6 +126,7 @@ class Controller {
 	 */
 	public function init()
 	{
+		wp_enqueue_style( 'nitro-k9-fa', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(),(WP_DEBUG) ? time() : self::VERSION_JS, TRUE );
 		wp_enqueue_script( 'nitro-k9-js', plugin_dir_url( dirname( __DIR__ )  ) . 'js/nitro-k9.js', array( 'jquery' ), (WP_DEBUG) ? time() : self::VERSION_JS, TRUE );
 		wp_enqueue_style( 'nitro-k9-css', plugin_dir_url( dirname( __DIR__ ) ) . 'css/nitro-k9.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
 		wp_enqueue_style( 'nitro-k9-bootstrap-css', plugin_dir_url( dirname( __DIR__ ) ) . 'css/bootstrap.css', array(), (WP_DEBUG) ? time() : self::VERSION_CSS );
@@ -140,6 +185,9 @@ class Controller {
 		include( dirname( dirname( __DIR__ ) ) . '/includes/extra-ty-email-meta.php' );
 	}
 
+	/**
+	 *
+	 */
 	public function save_ty_email_post()
 	{
 		global $post;
@@ -173,6 +221,11 @@ class Controller {
 		}
 	}
 
+	/**
+	 * @param $columns
+	 *
+	 * @return array
+	 */
 	public function add_new_columns( $columns )
 	{
 		$new = array(
@@ -182,6 +235,9 @@ class Controller {
 		return $columns;
 	}
 
+	/**
+	 * @param $column
+	 */
 	public function custom_columns( $column )
 	{
 		global $post;
@@ -194,9 +250,138 @@ class Controller {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function form_capture()
 	{
+		if ( isset( $_POST['nitro_k9_id'] ) && isset( $_POST['nitro_k9_hash'] ) )
+		{
+			$referrer = $_POST['_wp_http_referer'];
+			$parts = explode( '?', $referrer );
+			$page = $parts[0];
+			$requests = array();
+			if ( count( $parts ) == 2 )
+			{
+				$requests = explode( '&', $parts[1] );
+				foreach ( $requests as $index => $request )
+				{
+					$parts = explode( '=', $request );
+					if ( $parts[0] == 'nitro_k9_id' || $parts[0] == 'nitro_k9_hash' )
+					{
+						unset( $requests[$index] );
+					}
+				}
+			}
 
+			if ( strlen( $_POST['nitro_k9_id'] ) === 0 )
+			{
+				$entry = new Entry;
+
+				if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
+				{
+					$this->addError( 'Please enter a valid email address' );
+				}
+				else
+				{
+					$entry = Entry::getUnfinishedEntryFromEmail( $_POST['email'] );
+					if ( $entry->getId() === NULL )
+					{
+						$entry
+							->setEmail( $_POST['email'] )
+							->create();
+					}
+				}
+			}
+			else
+			{
+				$entry = new Entry( $_POST['nitro_k9_id'] );
+				
+				switch ( $entry->getCurrentStep() )
+				{
+					case Entry::STEP_BIO:
+
+						if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
+						{
+							$this->addError( 'Please enter a valid email address' );
+						}
+
+						if ( strlen( $_POST['first_name'] ) == 0 )
+						{
+							$this->addError( 'Please enter your first name' );
+						}
+
+						if ( strlen( $_POST['last_name'] ) == 0 )
+						{
+							$this->addError( 'Please enter your last name' );
+						}
+						
+						if ( $this->getErrorCount() == 0 )
+						{
+							$entry
+								->setEmail( $_POST['email'] )
+								->setFirstName( $_POST['first_name'] )
+								->setLastName( $_POST['last_name'] )
+								->setAddress( $_POST['address'] )
+								->setCity( $_POST['city'] )
+								->setState( $_POST['state'] )
+								->setZip( $_POST['zip'] )
+								->setHomePhone( $_POST['home_phone'] )
+								->setWorkPhone( $_POST['work_phone'] )
+								->setCellPhone( $_POST['cell_phone'] )
+								->setEmContact( $_POST['em_contact'] )
+								->setEmRelationship( $_POST['em_relationship'] )
+								->setEmHomePhone( $_POST['em_home_phone'] )
+								->setEmWorkPhone( $_POST['em_work_phone'] )
+								->setEmCellPhone( $_POST['em_cell_phone'] )
+								->setHowHeard( $_POST['how_heard'] );
+						}
+						
+						break;
+					
+					case Entry::STEP_PET_COUNT:
+						
+						if ( $_POST['large_dogs'] == 0 && $_POST['small_dogs'] == 0 )
+						{
+							$this->addError( 'You must enroll at least one pet to continue' );
+						}
+
+						if ( $this->getErrorCount() == 0 )
+						{
+							$entry
+								->setLargeDogs( $_POST['large_dogs'] )
+								->setSmallDogs( $_POST['small_dogs'] );
+						}
+						
+						break;
+				}
+
+				if ( $this->getErrorCount() == 0 )
+				{
+					if ( isset( $_POST['next_step'] ) )
+					{
+						$entry->nextStep();
+					}
+					elseif ( isset( $_POST['prior_step'] ) )
+					{
+						$entry->priorStep();
+					}
+				}
+				
+				$entry->update();
+			}
+
+			if ( $this->getErrorCount() == 0 )
+			{
+				if ( $entry->getId() !== NULL )
+				{
+					$requests[] = 'nitro_k9_id=' . $entry->getId();
+					$requests[] = 'nitro_k9_hash=' . $entry->getHash();
+				}
+
+				header( 'Location:' . $page . '?' . implode( '&', $requests ) );
+			}
+		}
 	}
 
 	/**
@@ -250,7 +435,7 @@ class Controller {
 		$this->attributes = shortcode_atts( array(), $attributes );
 
 		ob_start();
-		include( dirname( dirname( __DIR__ ) ) . '/includes/shortcode.php');
+		include( dirname( dirname( __DIR__ ) ) . '/includes/form.php');
 		$output = ob_get_contents();
 		ob_end_clean();
 		return $output;

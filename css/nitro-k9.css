@@ -1,3 +1,8 @@
 .nitro-k9-form h2 {
     border-bottom: 2px solid #000;
 }
+
+.nitro-k9-buttons button {
+    float: right;
+    margin-left: 5px;
+}

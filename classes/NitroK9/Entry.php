@@ -984,17 +984,28 @@ class Entry {
 	/**
 	 * @param $name
 	 * @param $label
+	 * @param $is_required
 	 * @param string $default_value
 	 * @param string $type
 	 * @param array $options
 	 */
-	public static function drawFormRow( $name, $label, $default_value="", $type='text', $options=array() )
+	public static function drawFormRow( $name, $label, $is_required, $default_value="", $type='text', $options=array() )
 	{
+		/** @var Controller $nitro_k9_controller */
+		global $nitro_k9_controller;
+
 		$uniqid = uniqid();
+		
+		if ( $is_required )
+		{
+			echo '<input type="hidden" name="required_' . $name . '" value="' . htmlspecialchars( $label ) . '">';
+		}
 
 		echo '
-			<div class="form-group">
-				<label for="' . $uniqid . '" class="col-sm-3 control-label">' . $label . '</label>
+			<div class="form-group ' . ( ( in_array( $name, $nitro_k9_controller->getErrorFieldNames() ) ) ? 'has-error' : '' ) . '">
+				<label for="' . $uniqid . '" class="col-sm-3 control-label"> 
+		        ' . ( ( $is_required ) ? '<span style="color:red">*</span>' : '' ) . $label . '
+		        </label>
 				<div class="col-sm-9">';
 
 		switch ( $type )

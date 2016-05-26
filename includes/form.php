@@ -47,7 +47,7 @@ if ( $make_new_entry )
 			you can always come back to this page and enter your email to pick up where you left off.
 		</p>
 
-		<?php \NitroK9\Entry::drawFormRow( 'email', 'Email Address', '', 'email'  ); ?>
+		<?php \NitroK9\Entry::drawFormRow( 'email', 'Email Address', TRUE, $entry->getEmail(), 'email'  ); ?>
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_BIO ) { ?>
 
@@ -55,16 +55,16 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'email', 'Email Address', $entry->getEmail(), 'email' );
-		\NitroK9\Entry::drawFormRow( 'first_name', 'First Name', $entry->getFirstName() );
-		\NitroK9\Entry::drawFormRow( 'last_name', 'Last Name', $entry->getLastName() );
-		\NitroK9\Entry::drawFormRow( 'address', 'Address', $entry->getAddress() );
-		\NitroK9\Entry::drawFormRow( 'city', 'City', $entry->getCity() );
-		\NitroK9\Entry::drawFormRow( 'state', 'State', $entry->getState() );
-		\NitroK9\Entry::drawFormRow( 'zip', 'Zip', $entry->getZip() );
-		\NitroK9\Entry::drawFormRow( 'home_phone', 'Home Phone', $entry->getHomePhone() );
-		\NitroK9\Entry::drawFormRow( 'work_phone', 'Work Phone', $entry->getWorkPhone() );
-		\NitroK9\Entry::drawFormRow( 'cell_phone', 'Cell Phone', $entry->getCellPhone() );
+		\NitroK9\Entry::drawFormRow( 'email', 'Email Address', TRUE, $entry->getEmail(), 'email' );
+		\NitroK9\Entry::drawFormRow( 'first_name', 'First Name', TRUE, $entry->getFirstName() );
+		\NitroK9\Entry::drawFormRow( 'last_name', 'Last Name', TRUE, $entry->getLastName() );
+		\NitroK9\Entry::drawFormRow( 'address', 'Address', TRUE, $entry->getAddress() );
+		\NitroK9\Entry::drawFormRow( 'city', 'City', TRUE, $entry->getCity() );
+		\NitroK9\Entry::drawFormRow( 'state', 'State', TRUE, $entry->getState() );
+		\NitroK9\Entry::drawFormRow( 'zip', 'Zip', TRUE, $entry->getZip() );
+		\NitroK9\Entry::drawFormRow( 'home_phone', 'Home Phone', FALSE, $entry->getHomePhone() );
+		\NitroK9\Entry::drawFormRow( 'work_phone', 'Work Phone', FALSE, $entry->getWorkPhone() );
+		\NitroK9\Entry::drawFormRow( 'cell_phone', 'Cell Phone', FALSE, $entry->getCellPhone() );
 
 		?>
 
@@ -72,11 +72,11 @@ if ( $make_new_entry )
 
 			<?php
 
-			\NitroK9\Entry::drawFormRow( 'em_contact', 'Emergency Contact', $entry->getEmContact() );
-			\NitroK9\Entry::drawFormRow( 'em_relationship', 'Relationship', $entry->getEmRelationship() );
-			\NitroK9\Entry::drawFormRow( 'em_home_phone', 'Home Phone', $entry->getEmHomePhone() );
-			\NitroK9\Entry::drawFormRow( 'em_work_phone', 'Work Phone', $entry->getEmWorkPhone() );
-			\NitroK9\Entry::drawFormRow( 'em_cell_phone', 'Cell Phone', $entry->getEmCellPhone() );
+			\NitroK9\Entry::drawFormRow( 'em_contact', 'Emergency Contact', FALSE, $entry->getEmContact() );
+			\NitroK9\Entry::drawFormRow( 'em_relationship', 'Relationship', FALSE, $entry->getEmRelationship() );
+			\NitroK9\Entry::drawFormRow( 'em_home_phone', 'Home Phone', FALSE, $entry->getEmHomePhone() );
+			\NitroK9\Entry::drawFormRow( 'em_work_phone', 'Work Phone', FALSE, $entry->getEmWorkPhone() );
+			\NitroK9\Entry::drawFormRow( 'em_cell_phone', 'Cell Phone', FALSE, $entry->getEmCellPhone() );
 
 			?>
 
@@ -84,7 +84,7 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'how_heard', 'How did you hear about us?', $entry->getHowHeard(), 'select', \NitroK9\Entry::getAllHowHeards() );
+		\NitroK9\Entry::drawFormRow( 'how_heard', 'How did you hear about us?', FALSE, $entry->getHowHeard(), 'select', \NitroK9\Entry::getAllHowHeards() );
 
 		?>
 
@@ -94,8 +94,8 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'large_dogs', 'Large Dogs (>= 35lbs)', $entry->getLargeDogs(), 'select', array(0,1,2,3,4,5) );
-		\NitroK9\Entry::drawFormRow( 'small_dogs', 'Small Dogs (< 35lbs)', $entry->getSmallDogs(), 'select', array(0,1,2,3,4,5) );
+		\NitroK9\Entry::drawFormRow( 'large_dogs', 'Large Dogs (>= 35lbs)', TRUE, $entry->getLargeDogs(), 'select', array(0,1,2,3,4,5) );
+		\NitroK9\Entry::drawFormRow( 'small_dogs', 'Small Dogs (< 35lbs)', TRUE, $entry->getSmallDogs(), 'select', array(0,1,2,3,4,5) );
 
 		?>
 
@@ -117,18 +117,18 @@ if ( $make_new_entry )
 
 	<?php } ?>
 
-	<div class="well clearfix">
+	<div class="well clearfix nitro-k9-buttons">
 		<div class="pull-right">
-			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_EMAIL ) { ?>
-				<button class="btn btn-default" name="prior_step">
-					<i class="fa fa-chevron-left"></i>
-					Prior Step
-				</button>
-			<?php } ?>
 			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_CONFIRM ) { ?>
 				<button class="btn btn-default" name="next_step">
 					Next Step
 					<i class="fa fa-chevron-right"></i>
+				</button>
+			<?php } ?>
+			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_EMAIL ) { ?>
+				<button class="btn btn-default" name="prior_step">
+					<i class="fa fa-chevron-left"></i>
+					Prior Step
 				</button>
 			<?php } ?>
 		</div>

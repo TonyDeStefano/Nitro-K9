@@ -12,6 +12,7 @@ class Controller {
 
 	private $attributes;
 	private $errors;
+	private $error_field_names;
 	
 	/** @var PriceGroup[] $prices */
 	public $price_groups;
@@ -55,6 +56,39 @@ class Controller {
 	public function getErrorCount()
 	{
 		return ( $this->errors === NULL ) ? 0 : count( $this->errors );
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getErrorFieldNames()
+	{
+		return ( $this->error_field_names === NULL ) ? array() : $this->error_field_names;
+	}
+
+	/**
+	 * @param array $error_field_names
+	 *
+	 * @return $this
+	 */
+	public function setErrorFieldNames( array $error_field_names )
+	{
+		$this->error_field_names = $error_field_names;
+
+		return $this;
+	}
+
+	/**
+	 * @param $field_name
+	 */
+	public function addErrorFieldName( $field_name )
+	{
+		if ( $this->error_field_names === NULL )
+		{
+			$this->error_field_names = array();
+		}
+
+		$this->error_field_names[] = $field_name;
 	}
 
 	/**
@@ -296,7 +330,23 @@ class Controller {
 			else
 			{
 				$entry = new Entry( $_POST['nitro_k9_id'] );
-				
+
+				if ( ! isset( $_POST['prior_step'] ) )
+				{
+					foreach ( $_POST as $key => $val )
+					{
+						if ( substr( $key, 0, 9 ) == 'required_' )
+						{
+							$field = substr( $key, 9 );
+							if ( strlen( trim( $_POST[ $field ] ) ) == 0 )
+							{
+								$this->addError( $val . ' is required' );
+								$this->addErrorFieldName( $field );
+							}
+						}
+					}
+				}
+
 				switch ( $entry->getCurrentStep() )
 				{
 					case Entry::STEP_BIO:
@@ -306,16 +356,6 @@ class Controller {
 							if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
 							{
 								$this->addError( 'Please enter a valid email address' );
-							}
-
-							if ( strlen( $_POST['first_name'] ) == 0 )
-							{
-								$this->addError( 'Please enter your first name' );
-							}
-
-							if ( strlen( $_POST['last_name'] ) == 0 )
-							{
-								$this->addError( 'Please enter your last name' );
 							}
 						}
 						
@@ -449,13 +489,13 @@ class Controller {
 
 				if ( $this->getErrorCount() == 0 )
 				{
-					if ( isset( $_POST['next_step'] ) )
-					{
-						$entry->nextStep();
-					}
-					elseif ( isset( $_POST['prior_step'] ) )
+					if ( isset( $_POST['prior_step'] ) )
 					{
 						$entry->priorStep();
+					}
+					else
+					{
+						$entry->nextStep();
 					}
 
 					$entry->update();
@@ -536,7 +576,8 @@ class Controller {
 	/**
 	 * @return array
 	 */
-	public function getAttributes() {
+	public function getAttributes() 
+	{
 		return ( $this->attributes === NULL ) ? array() : $this->attributes;
 	}
 
@@ -545,7 +586,8 @@ class Controller {
 	 *
 	 * @return Controller
 	 */
-	public function setAttributes( array $attributes ) {
+	public function setAttributes( array $attributes ) 
+	{
 		$this->attributes = $attributes;
 
 		return $this;
@@ -557,7 +599,8 @@ class Controller {
 	 *
 	 * @return Controller
 	 */
-	public function addAttribute( $key, $val ) {
+	public function addAttribute( $key, $val ) 
+	{
 		if ( $this->attributes === NULL ) {
 			$this->attributes = array();
 		}

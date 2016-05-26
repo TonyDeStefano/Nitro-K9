@@ -32,40 +32,40 @@ require_once ( 'classes/NitroK9/Price.php' );
 require_once ( 'classes/NitroK9/Entry.php' );
 require_once ( 'classes/NitroK9/Pet.php' );
 
-$controller = new \NitroK9\Controller;
+$nitro_k9_controller = new \NitroK9\Controller;
 
 /* activate */
-register_activation_hook( __FILE__, array( $controller, 'activate' ) );
+register_activation_hook( __FILE__, array( $nitro_k9_controller, 'activate' ) );
 
 /* enqueue js and css */
-add_action( 'init', array( $controller, 'init' ) );
+add_action( 'init', array( $nitro_k9_controller, 'init' ) );
 
 /* custom post type */
-add_action( 'init', array( $controller, 'custom_post_type' ) );
+add_action( 'init', array( $nitro_k9_controller, 'custom_post_type' ) );
 
 /* capture form post */
-add_action ( 'init', array( $controller, 'form_capture' ) );
+add_action ( 'init', array( $nitro_k9_controller, 'form_capture' ) );
 
 /* register shortcode */
-add_shortcode ( 'nitro_k9', array( $controller, 'short_code' ) );
+add_shortcode ( 'nitro_k9', array( $nitro_k9_controller, 'short_code' ) );
 
 /* admin stuff */
 if (is_admin() )
 {
 	/* Add main menu and sub-menus */
-	add_action( 'admin_menu', array( $controller, 'admin_menus') );
+	add_action( 'admin_menu', array( $nitro_k9_controller, 'admin_menus') );
 
 	/* register settings */
-	add_action( 'admin_init', array( $controller, 'register_settings' ) );
+	add_action( 'admin_init', array( $nitro_k9_controller, 'register_settings' ) );
 
 	/* admin scripts */
-	add_action( 'admin_init', array( $controller, 'admin_scripts' ) );
+	add_action( 'admin_init', array( $nitro_k9_controller, 'admin_scripts' ) );
 
 	/* custom items for custom post type */
-	add_filter('gettext', array( $controller, 'custom_enter_title' ) );
-	add_action( 'admin_init', array( $controller, 'extra_ty_email_meta' ) );
-	add_action( 'save_post', array( $controller, 'save_ty_email_post' ) );
-	add_filter( 'manage_nitro_k9_ty_email_posts_columns', array( $controller, 'add_new_columns' ) );
-	add_action( 'manage_posts_custom_column' , array( $controller, 'custom_columns' ) );
+	add_filter('gettext', array( $nitro_k9_controller, 'custom_enter_title' ) );
+	add_action( 'admin_init', array( $nitro_k9_controller, 'extra_ty_email_meta' ) );
+	add_action( 'save_post', array( $nitro_k9_controller, 'save_ty_email_post' ) );
+	add_filter( 'manage_nitro_k9_ty_email_posts_columns', array( $nitro_k9_controller, 'add_new_columns' ) );
+	add_action( 'manage_posts_custom_column' , array( $nitro_k9_controller, 'custom_columns' ) );
 
 }

@@ -9,6 +9,7 @@ class Entry {
 	const STEP_EMAIL = 'email';
 	const STEP_ENTRIES = 'entries';
 	const STEP_BIO = 'bio';
+	const STEP_OWNER = 'owner';
 	const STEP_PET_COUNT = 'pet_count';
 	const STEP_PET_INFO = 'pet_info';
 	const STEP_PET_SERVICES = 'pet_services';
@@ -44,12 +45,16 @@ class Entry {
 	private $small_dogs;
 	private $current_step;
 	private $current_pet;
+	private $current_owner;
 	private $created_at;
 	private $updated_at;
 	private $completed_at;
 	
 	/** @var Pet[] $pets */
 	private $pets;
+	
+	/** @var  Owner[] $owners */
+	private $owners;
 
 	private $steps;
 	private $how_heards;
@@ -95,10 +100,12 @@ class Entry {
 					'em_work_phone' => $this->em_work_phone,
 					'how_heard' => $this->how_heard,
 					'pets' => $this->getPets( TRUE ),
+					'additional_owners' => $this->getOwners( TRUE ),
 					'large_dogs' => $this->getLargeDogs(),
 					'small_dogs' => $this->getSmallDogs(),
 					'current_step' => self::STEP_BIO,
 					'current_pet' => $this->getCurrentPet(),
+					'current_owner' => $this->getCurrentOwner(),
 					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
@@ -120,9 +127,11 @@ class Entry {
 					'%s',
 					'%s',
 					'%s',
+					'%s',
 					'%d',
 					'%d',
 					'%s',
+					'%d',
 					'%d',
 					'%s',
 					'%s'
@@ -187,6 +196,7 @@ class Entry {
 			->setSmallDogs( $row->small_dogs )
 			->setCurrentStep( $row->current_step )
 			->setCurrentPet( $row->current_pet )
+			->setCurrentOwner( $row->current_owner )
 			->setCreatedAt( $row->created_at )
 			->setUpdatedAt( $row->updated_at )
 			->setCompletedAt( $row->completed_at );
@@ -200,6 +210,19 @@ class Entry {
 				{
 					$p = new Pet( json_encode( $pet ) );
 					$this->addPet( $p );
+				}
+			}
+		}
+
+		if ( strlen( $row->additional_owners ) > 0 )
+		{
+			$owners = json_decode( $row->additional_owners, TRUE );
+			if ( is_array( $owners ) )
+			{
+				foreach ( $owners as $owner )
+				{
+					$o = new Owner( json_encode( $owner ) );
+					$this->addOwner( $o );
 				}
 			}
 		}
@@ -233,10 +256,12 @@ class Entry {
 					'em_work_phone' => $this->em_work_phone,
 					'how_heard' => $this->how_heard,
 					'pets' => $this->getPets( TRUE ),
+					'additional_owners' => $this->getOwners( TRUE ),
 					'large_dogs' => $this->getLargeDogs(),
 					'small_dogs' => $this->getSmallDogs(),
 					'current_step' => $this->getCurrentStep(),
 					'current_pet' => $this->getCurrentPet(),
+					'current_owner' => $this->getCurrentOwner(),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' ),
 					'completed_at' => ( $this->getCompletedAt() === NULL ) ? NULL : $this->getCompletedAt( 'Y-m-d H:i:s' )
 				),
@@ -261,9 +286,11 @@ class Entry {
 					'%s',
 					'%s',
 					'%s',
+					'%s',
 					'%d',
 					'%d',
 					'%s',
+					'%d',
 					'%d',
 					'%s',
 					'%s'
@@ -740,7 +767,11 @@ class Entry {
 	 */
 	public function getCurrentPet()
 	{
-		if ( $this->current_pet === NULL )
+		if ( count( $this->getPets() ) == 0 )
+		{
+			return NULL;
+		}
+		elseif ( $this->current_pet === NULL )
 		{
 			return ( count( $this->getPets() ) == 0 ) ? NULL : 0;
 		}
@@ -757,7 +788,38 @@ class Entry {
 	 */
 	public function setCurrentPet( $current_pet )
 	{
-		$this->current_pet = $current_pet;
+		$this->current_pet = ( is_numeric( $current_pet ) ) ? intval( $current_pet ) : NULL;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getCurrentOwner()
+	{
+		if ( count( $this->getOwners() ) == 0 )
+		{
+			return NULL;
+		}
+		elseif ( $this->current_owner === NULL )
+		{
+			return ( count( $this->getOwners() ) == 0 ) ? NULL : 0;
+		}
+		else
+		{
+			return ( $this->current_owner >= count( $this->getOwners() ) ) ? count( $this->getOwners() ) - 1 : $this->current_owner;
+		}
+	}
+
+	/**
+	 * @param mixed $current_owner
+	 *
+	 * @return Entry
+	 */
+	public function setCurrentOwner( $current_owner )
+	{
+		$this->current_owner = ( is_numeric( $current_owner ) ) ? intval( $current_owner ) : NULL;
 
 		return $this;
 	}
@@ -844,30 +906,6 @@ class Entry {
 	}
 
 	/**
-	 * @param bool $as_json
-	 *
-	 * @return array|mixed|Pet[]|string|void
-	 */
-	public function getPets( $as_json=FALSE )
-	{
-		if ( $as_json )
-		{
-			$pets = [];
-			if ( $this->pets !== NULL )
-			{
-				foreach ( $this->pets as $pet )
-				{
-					$pets[] = $pet->toArray();
-				}
-			}
-
-			return json_encode( $pets );
-		}
-
-		return ( $this->pets === NULL ) ? array() : $this->pets;
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getSmallDogCount()
@@ -916,6 +954,30 @@ class Entry {
 	}
 
 	/**
+	 * @param bool $as_json
+	 *
+	 * @return array|mixed|Pet[]|string|void
+	 */
+	public function getPets( $as_json=FALSE )
+	{
+		if ( $as_json )
+		{
+			$pets = [];
+			if ( $this->pets !== NULL )
+			{
+				foreach ( $this->pets as $pet )
+				{
+					$pets[] = $pet->toArray();
+				}
+			}
+
+			return json_encode( $pets );
+		}
+
+		return ( $this->pets === NULL ) ? array() : $this->pets;
+	}
+
+	/**
 	 * @param Pet $pet
 	 *
 	 * @return $this
@@ -930,6 +992,73 @@ class Entry {
 		$this->pets[] = $pet;
 
 		return $this;
+	}
+
+	/**
+	 * @param Owner[] $owners
+	 *
+	 * @return Entry
+	 */
+	public function setOwners( array $owners )
+	{
+		$this->owners = $owners;
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $as_json
+	 *
+	 * @return array|mixed|Owner[]|string|void
+	 */
+	public function getOwners( $as_json=FALSE )
+	{
+		if ( $as_json )
+		{
+			$owners = [];
+			if ( $this->owners !== NULL )
+			{
+				foreach ( $this->owners as $owner )
+				{
+					$owners[] = $owner->toArray();
+				}
+			}
+
+			return json_encode( $owners );
+		}
+
+		return ( $this->owners === NULL ) ? array() : $this->owners;
+	}
+
+	/**
+	 * @param Owner $owner
+	 *
+	 * @return $this
+	 */
+	public function addOwner( $owner )
+	{
+		if ( $this->owners === NULL )
+		{
+			$this->owners = array();
+		}
+
+		$this->owners[] = $owner;
+
+		return $this;
+	}
+
+	/**
+	 * @param $index
+	 */
+	public function deleteOwner( $index )
+	{
+		if ( $this->owners !== NULL )
+		{
+			if ( isset( $this->owners[$index] ) )
+			{
+				unset ( $this->owners[$index] );
+			}
+		}
 	}
 
 	/**
@@ -1049,7 +1178,27 @@ class Entry {
 		switch ( $this->getCurrentStep() )
 		{
 			case self::STEP_BIO:
-				$this->setCurrentStep( self::STEP_PET_COUNT );
+				if ( count( $this->getOwners() ) > 0 )
+				{
+					$this
+						->setCurrentOwner( 0 )
+						->setCurrentStep( self::STEP_OWNER );
+				}
+				else
+				{
+					$this->setCurrentStep( self::STEP_PET_COUNT );
+				}
+				break;
+
+			case self::STEP_OWNER:
+				if ( count( $this->getOwners() ) == $this->getCurrentOwner() + 1 )
+				{
+					$this->setCurrentStep( self::STEP_PET_COUNT );
+				}
+				else
+				{
+					$this->setCurrentOwner( $this->getCurrentOwner() + 1 );
+				}
 				break;
 
 			case self::STEP_PET_COUNT:
@@ -1071,8 +1220,28 @@ class Entry {
 				$this->setCurrentStep( self::STEP_EMAIL );
 				break;
 
+			case self::STEP_OWNER:
+				if ( $this->getCurrentOwner() == 0 )
+				{
+					$this->setCurrentStep( self::STEP_BIO );
+				}
+				else
+				{
+					$this->setCurrentOwner( $this->getCurrentOwner() - 1 );
+				}
+				break;
+
 			case self::STEP_PET_COUNT:
-				$this->setCurrentStep( self::STEP_BIO );
+				if ( count( $this->getOwners() ) == 0 )
+				{
+					$this->setCurrentStep( self::STEP_BIO );
+				}
+				else
+				{
+					$this
+						->setCurrentStep( self::STEP_OWNER )
+						->setCurrentOwner( count( $this->getOwners() ) - 1 );
+				}
 				break;
 
 			case self::STEP_PET_INFO:
@@ -1085,5 +1254,146 @@ class Entry {
 			default:
 				$this->setCurrentStep( self::STEP_BIO );
 		}
+	}
+
+	public function getPriorStepName()
+	{
+		switch ( $this->getCurrentStep() )
+		{
+			case self::STEP_BIO:
+				return 'Email';
+
+			case self::STEP_OWNER:
+				if ( $this->getCurrentOwner() == 0 )
+				{
+					return 'You';
+				}
+				else
+				{
+					if ( strlen( $this->getOwners()[ $this->getCurrentOwner() - 1 ]->getInfoItem( 'first_name' ) ) == 0 )
+					{
+						return 'Owner';
+					}
+					else
+					{
+						return $this->getOwners()[ $this->getCurrentOwner() - 1 ]->getInfoItem( 'first_name' );
+					}
+				}
+
+			case self::STEP_PET_COUNT:
+				if ( count( $this->getOwners() ) == 0 )
+				{
+					return 'You';
+				}
+				else
+				{
+					if ( strlen( $this->getOwners()[ count( $this->getOwners() ) - 1 ]->getInfoItem( 'first_name' ) ) == 0 )
+					{
+						return 'Owner';
+					}
+					else
+					{
+						return $this->getOwners()[ count( $this->getOwners() ) - 1 ]->getInfoItem( 'first_name' );
+					}
+				}
+
+			case self::STEP_PET_INFO:
+				if ( $this->getCurrentPet() == 0 )
+				{
+					return 'Pet Count';
+				}
+				else
+				{
+					if ( strlen( $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' ) ) == 0 )
+					{
+						return $this->getPets()[ count( $this->getPets() ) - 1 ]->getType();
+					}
+					else
+					{
+						return $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' );
+					}
+				}
+		}
+
+		return '';
+	}
+
+	public function getNextStepName()
+	{
+		switch ( $this->getCurrentStep() )
+		{
+			case self::STEP_EMAIL:
+				return 'You';
+
+			case self::STEP_BIO:
+				if ( count( $this->getOwners() ) == 0 )
+				{
+					return 'Pet Count';
+				}
+				else
+				{
+					if ( strlen( $this->getOwners()[0]->getInfoItem( 'first_name' ) ) == 0 )
+					{
+						return 'Owner';
+					}
+					else
+					{
+						return $this->getOwners()[0]->getInfoItem( 'first_name' );
+					}
+				}
+
+			case self::STEP_OWNER:
+				if ( count( $this->getOwners() ) - 1 == $this->getCurrentOwner() )
+				{
+					return 'Pet Count';
+				}
+				else
+				{
+					if ( strlen( $this->getOwners()[ $this->getCurrentOwner() + 1 ]->getInfoItem( 'first_name' ) ) == 0 )
+					{
+						return 'Owner';
+					}
+					else
+					{
+						return $this->getOwners()[ $this->getCurrentOwner() + 1 ]->getInfoItem( 'first_name' );
+					}
+				}
+
+			case self::STEP_PET_COUNT:
+				if ( count( $this->getPets() ) == 0 )
+				{
+					return 'Pet Info';
+				}
+				else
+				{
+					if ( strlen( $this->getPets()[0]->getInfoItem( 'name' ) ) == 0 )
+					{
+						return 'Pet Info';
+					}
+					else
+					{
+						return $this->getPets()[0]->getInfoItem( 'name' );
+					}
+				}
+
+			case self::STEP_PET_INFO:
+				if ( $this->getCurrentPet() == count( $this->getPets() ) - 1 )
+				{
+					return 'Services';
+				}
+				else
+				{
+					if ( strlen( $this->getPets()[ $this->getCurrentPet() + 1 ]->getInfoItem( 'name' ) ) == 0 )
+					{
+						return $this->getPets()[ $this->getCurrentPet() + 1 ]->getType();
+					}
+					else
+					{
+						return $this->getPets()[ $this->getCurrentPet() + 1 ]->getInfoItem( 'name' );
+					}
+				}
+		}
+
+		return '';
 	}
 }

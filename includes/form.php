@@ -97,6 +97,46 @@ if ( $make_new_entry )
 
 		?>
 
+	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_OWNER ) { ?>
+
+		<?php $owner = $entry->getOwners()[$entry->getCurrentOwner()]; ?>
+
+		<h2>
+			Additional Owner Info
+			<?php if ( count( $entry->getOwners() ) > 1 ) { ?>
+				( #<?php echo $entry->getCurrentOwner()+1; ?> / <?php echo count( $entry->getOwners() ); ?> )
+			<?php } ?>
+		</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormRow( 'email', 'Email Address', TRUE, $owner->getInfoItem( 'email' ), 'email' );
+		\NitroK9\Entry::drawFormRow( 'first_name', 'First Name', TRUE, $owner->getInfoItem( 'first_name' ) );
+		\NitroK9\Entry::drawFormRow( 'last_name', 'Last Name', TRUE, $owner->getInfoItem( 'last_name' ) );
+		\NitroK9\Entry::drawFormRow( 'address', 'Address', TRUE, $owner->getInfoItem( 'address' ) );
+		\NitroK9\Entry::drawFormRow( 'city', 'City', TRUE, $owner->getInfoItem( 'city' ) );
+		\NitroK9\Entry::drawFormRow( 'state', 'State', TRUE, $owner->getInfoItem( 'state' ) );
+		\NitroK9\Entry::drawFormRow( 'zip', 'Zip', TRUE, $owner->getInfoItem( 'zip' ) );
+		\NitroK9\Entry::drawFormRow( 'home_phone', 'Home Phone', FALSE, $owner->getInfoItem( 'home_phone' ) );
+		\NitroK9\Entry::drawFormRow( 'work_phone', 'Work Phone', FALSE, $owner->getInfoItem( 'work_phone' ) );
+		\NitroK9\Entry::drawFormRow( 'cell_phone', 'Cell Phone', FALSE, $owner->getInfoItem( 'cell_phone' ) );
+
+		?>
+
+		<div class="well">
+
+			<?php
+
+			\NitroK9\Entry::drawFormRow( 'em_contact', 'Emergency Contact', FALSE, $owner->getInfoItem( 'em_contact' ) );
+			\NitroK9\Entry::drawFormRow( 'em_relationship', 'Relationship', FALSE, $owner->getInfoItem( 'em_relationship' ) );
+			\NitroK9\Entry::drawFormRow( 'em_home_phone', 'Home Phone', FALSE, $owner->getInfoItem( 'em_home_phone' ) );
+			\NitroK9\Entry::drawFormRow( 'em_work_phone', 'Work Phone', FALSE, $owner->getInfoItem( 'em_work_phone' ) );
+			\NitroK9\Entry::drawFormRow( 'em_cell_phone', 'Cell Phone', FALSE, $owner->getInfoItem( 'em_cell_phone' ) );
+
+			?>
+
+		</div>
+
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_COUNT ) { ?>
 
 		<h2>How many pets would you like to enroll?</h2>
@@ -181,14 +221,26 @@ if ( $make_new_entry )
 		<div class="pull-right">
 			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_CONFIRM ) { ?>
 				<button class="btn btn-default" name="next_step">
-					Next Step
+					Next Step (<?php echo $entry->getNextStepName(); ?>)
 					<i class="fa fa-chevron-right"></i>
+				</button>
+			<?php } ?>
+			<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_BIO || $entry->getCurrentStep() == \NitroK9\Entry::STEP_OWNER ) { ?>
+				<button class="btn btn-default" name="add_owner">
+					<i class="fa fa-plus"></i>
+					Add Another Owner
+				</button>
+			<?php } ?>
+			<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_OWNER ) { ?>
+				<button class="btn btn-default" name="remove_owner">
+					<i class="fa fa-minus"></i>
+					Remove This Owner
 				</button>
 			<?php } ?>
 			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_EMAIL ) { ?>
 				<button class="btn btn-default" name="prior_step">
 					<i class="fa fa-chevron-left"></i>
-					Prior Step
+					Prior Step (<?php echo $entry->getPriorStepName(); ?>)
 				</button>
 			<?php } ?>
 		</div>

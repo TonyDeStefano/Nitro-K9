@@ -140,12 +140,14 @@ class Controller {
 					`pets` TEXT DEFAULT NULL,
 					`large_dogs` INT(11) DEFAULT NULL,
 					`small_dogs` INT(11) DEFAULT NULL,
+					`additional_owners` TEXT DEFAULT NULL,
 					`current_step` VARCHAR(50) DEFAULT NULL,
 					`current_pet` INT(11) DEFAULT NULL,
+					`current_owner` INT(11) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
 					`completed_at` DATETIME DEFAULT NULL,
-					PRIMARY KEY (`id`),
+					PRIMARY KEY  (`id`),
 					KEY `email` (`email`),
 					KEY `step` (`step`)
 					
@@ -337,7 +339,7 @@ class Controller {
 			{
 				$entry = new Entry( $_POST['nitro_k9_id'] );
 
-				if ( ! isset( $_POST['prior_step'] ) )
+				if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) )
 				{
 					foreach ( $_POST as $key => $val )
 					{
@@ -386,6 +388,38 @@ class Controller {
 								->setHowHeard( $_POST['how_heard'] );
 						}
 						
+						break;
+
+					case Entry::STEP_OWNER:
+
+						if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) )
+						{
+							if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
+							{
+								$this->addError( 'Please enter a valid email address' );
+							}
+						}
+
+						if ( $this->getErrorCount() == 0 )
+						{
+							$entry->getOwners()[ $entry->getCurrentOwner() ]
+								->setInfoItem( 'email', $_POST['email'] )
+								->setInfoItem( 'first_name', $_POST['first_name'] )
+								->setInfoItem( 'last_name', $_POST['last_name'] )
+								->setInfoItem( 'address', $_POST['address'] )
+								->setInfoItem( 'city', $_POST['city'] )
+								->setInfoItem( 'state', $_POST['state'] )
+								->setInfoItem( 'zip', $_POST['zip'] )
+								->setInfoItem( 'home_phone', $_POST['home_phone'] )
+								->setInfoItem( 'work_phone', $_POST['work_phone'] )
+								->setInfoItem( 'cell_phone', $_POST['cell_phone'] )
+								->setInfoItem( 'em_contact', $_POST['em_contact'] )
+								->setInfoItem( 'em_relationship', $_POST['em_relationship'] )
+								->setInfoItem( 'em_home_phone', $_POST['em_home_phone'] )
+								->setInfoItem( 'em_work_phone', $_POST['em_work_phone'] )
+								->setInfoItem( 'em_cell_phone', $_POST['em_cell_phone'] );
+						}
+
 						break;
 					
 					case Entry::STEP_PET_COUNT:
@@ -499,8 +533,26 @@ class Controller {
 					{
 						$entry->priorStep();
 					}
+					elseif ( isset( $_POST['remove_owner'] ) )
+					{
+						$temp_current_owner = $entry->getCurrentOwner();
+						$entry->priorStep();
+						$entry->deleteOwner( $temp_current_owner );
+					}
 					else
 					{
+						if ( isset( $_POST['add_owner'] ) )
+						{
+							$owner = new Owner;
+							$owner
+								->setInfoItem( 'address', $entry->getAddress() )
+								->setInfoItem( 'city', $entry->getCity() )
+								->setInfoItem( 'state', $entry->getState() )
+								->setInfoItem( 'zip', $entry->getZip() );
+
+							$entry->addOwner( $owner );
+						}
+
 						$entry->nextStep();
 					}
 

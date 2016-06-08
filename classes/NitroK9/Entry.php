@@ -1054,9 +1054,32 @@ class Entry {
 	{
 		if ( $this->owners !== NULL )
 		{
-			if ( isset( $this->owners[$index] ) )
+			if ( isset( $this->owners[ $index ] ) )
 			{
-				unset ( $this->owners[$index] );
+				unset ( $this->owners[ $index ] );
+			}
+		}
+	}
+
+	/**
+	 * @param $index
+	 */
+	public function deletePet( $index )
+	{
+		if ( $this->pets !== NULL )
+		{
+			if ( isset( $this->pets[ $index ] ) )
+			{
+				if ( $this->pets[ $index ]->getType() == Pet::TYPE_LARGE_DOG )
+				{
+					$this->large_dogs--;
+				}
+				else
+				{
+					$this->small_dogs--;
+				}
+
+				unset ( $this->pets[ $index ] );
 			}
 		}
 	}
@@ -1207,6 +1230,19 @@ class Entry {
 					->setCurrentStep( self::STEP_PET_INFO );
 				break;
 
+			case self::STEP_PET_INFO:
+				if ( count( $this->getPets() ) == $this->getCurrentPet() + 1 )
+				{
+					$this
+						->setCurrentPet( 0 )
+						->setCurrentStep( self::STEP_PET_SERVICES );
+				}
+				else
+				{
+					$this->setCurrentPet( $this->getCurrentPet() + 1 );
+				}
+				break;
+
 			default:
 				$this->setCurrentStep( self::STEP_BIO );
 		}
@@ -1249,6 +1285,23 @@ class Entry {
 				{
 					$this->setCurrentStep( self::STEP_PET_COUNT );
 				}
+				else
+				{
+					$this->setCurrentPet( $this->getCurrentPet() - 1 );
+				}
+				break;
+
+			case self::STEP_PET_SERVICES:
+				if ( $this->getCurrentPet() == 0 )
+				{
+					$this
+						->setCurrentPet( count( $this->getPets() ) - 1 )
+						->setCurrentStep( self::STEP_PET_INFO );
+				}
+				else
+				{
+					$this->setCurrentPet( $this->getCurrentPet() - 1 );
+				}
 				break;
 
 			default:
@@ -1283,7 +1336,7 @@ class Entry {
 			case self::STEP_PET_COUNT:
 				if ( count( $this->getOwners() ) == 0 )
 				{
-					return 'You';
+					return 'Your Info';
 				}
 				else
 				{
@@ -1304,14 +1357,24 @@ class Entry {
 				}
 				else
 				{
-					if ( strlen( $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' ) ) == 0 )
+					if ( strlen( $this->getPets()[ $this->getCurrentPet() - 1 ]->getInfoItem( 'name' ) ) == 0 )
 					{
-						return $this->getPets()[ count( $this->getPets() ) - 1 ]->getType();
+						return $this->getPets()[ $this->getCurrentPet() - 1 ]->getType();
 					}
 					else
 					{
-						return $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' );
+						return $this->getPets()[ $this->getCurrentPet() - 1 ]->getInfoItem( 'name' );
 					}
+				}
+
+			case self::STEP_PET_SERVICES:
+				if ( $this->getCurrentPet() == 0 )
+				{
+					return $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' );
+				}
+				else
+				{
+					return 'Services for ' . $this->getPets()[ $this->getCurrentPet() - 1 ]->getInfoItem( 'name' );
 				}
 		}
 
@@ -1323,7 +1386,7 @@ class Entry {
 		switch ( $this->getCurrentStep() )
 		{
 			case self::STEP_EMAIL:
-				return 'You';
+				return 'Your Info';
 
 			case self::STEP_BIO:
 				if ( count( $this->getOwners() ) == 0 )
@@ -1360,21 +1423,7 @@ class Entry {
 				}
 
 			case self::STEP_PET_COUNT:
-				if ( count( $this->getPets() ) == 0 )
-				{
-					return 'Pet Info';
-				}
-				else
-				{
-					if ( strlen( $this->getPets()[0]->getInfoItem( 'name' ) ) == 0 )
-					{
-						return 'Pet Info';
-					}
-					else
-					{
-						return $this->getPets()[0]->getInfoItem( 'name' );
-					}
-				}
+				return 'Pet Info';
 
 			case self::STEP_PET_INFO:
 				if ( $this->getCurrentPet() == count( $this->getPets() ) - 1 )
@@ -1392,8 +1441,31 @@ class Entry {
 						return $this->getPets()[ $this->getCurrentPet() + 1 ]->getInfoItem( 'name' );
 					}
 				}
+
+			case self::STEP_PET_SERVICES:
+				if ( $this->getCurrentPet() == count( $this->getPets() ) - 1 )
+				{
+					return 'Aggression??';
+				}
+				else
+				{
+					return 'Services for ' . $this->getPets()[ $this->getCurrentPet() + 1 ]->getInfoItem( 'name' );
+				}
 		}
 
 		return '';
+	}
+
+	public static function canAddItem( $item )
+	{
+		$excludes = array(
+			'_wpnonce',
+			'_wp_http_referer',
+			'nitro_k9_id',
+			'nitro_k9_hash',
+			'next_step'
+		);
+
+		return ( substr( $item, 0, 9 ) !== 'required_' && ! in_array( $item, $excludes ) );
 	}
 }

@@ -339,7 +339,7 @@ class Controller {
 			{
 				$entry = new Entry( $_POST['nitro_k9_id'] );
 
-				if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) )
+				if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) && ! isset( $_POST['remove_pet'] ) )
 				{
 					foreach ( $_POST as $key => $val )
 					{
@@ -392,7 +392,7 @@ class Controller {
 
 					case Entry::STEP_OWNER:
 
-						if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) )
+						if ( ! isset( $_POST['prior_step'] ) && ! isset( $_POST['remove_owner'] ) && ! isset( $_POST['remove_pet'] ) )
 						{
 							if ( filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) === FALSE )
 							{
@@ -525,6 +525,14 @@ class Controller {
 						}
 						
 						break;
+					
+					case Entry::STEP_PET_INFO:
+
+						$entry->getPets()[ $entry->getCurrentPet() ]
+							->setIsAggressive( ( $_POST['is_aggressive'] == 1 ) )
+							->setInfoItemsFromPost();
+
+						break;
 				}
 
 				if ( $this->getErrorCount() == 0 )
@@ -538,6 +546,12 @@ class Controller {
 						$temp_current_owner = $entry->getCurrentOwner();
 						$entry->priorStep();
 						$entry->deleteOwner( $temp_current_owner );
+					}
+					elseif ( isset( $_POST['remove_pet'] ) )
+					{
+						$temp_current_pet = $entry->getCurrentPet();
+						$entry->priorStep();
+						$entry->deletePet( $temp_current_pet );
 					}
 					else
 					{

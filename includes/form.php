@@ -150,7 +150,7 @@ if ( $make_new_entry )
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_INFO ) { ?>
 
-		<?php $pet = $entry->getPets()[$entry->getCurrentPet()]; ?>
+		<?php $pet = $entry->getPets()[ $entry->getCurrentPet() ]; ?>
 
 		<h2>
 			Tell us about
@@ -215,6 +215,15 @@ if ( $make_new_entry )
 
 		?>
 
+	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_SERVICES ) { ?>
+
+		<?php $pet = $entry->getPets()[ $entry->getCurrentPet() ]; ?>
+
+		<h2>
+			Services for
+			<?php echo $pet->getInfoItem( 'name' ); ?>
+		</h2>
+
 	<?php } ?>
 
 	<div class="well clearfix nitro-k9-buttons">
@@ -235,6 +244,12 @@ if ( $make_new_entry )
 				<button class="btn btn-default" name="remove_owner">
 					<i class="fa fa-minus"></i>
 					Remove This Owner
+				</button>
+			<?php } ?>
+			<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_INFO ) { ?>
+				<button class="btn btn-default" name="remove_pet">
+					<i class="fa fa-minus"></i>
+					Remove This Pet
 				</button>
 			<?php } ?>
 			<?php if ( $entry->getCurrentStep() != \NitroK9\Entry::STEP_EMAIL ) { ?>

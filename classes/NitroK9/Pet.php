@@ -46,12 +46,12 @@ class Pet {
 
 				if ( isset( $array['services'] ) )
 				{
-					$this->info = $array['services'];
+					$this->services = $array['services'];
 				}
 
 				if ( isset( $array['aggression'] ) )
 				{
-					$this->info = $array['aggression'];
+					$this->aggression = $array['aggression'];
 				}
 			}
 		}
@@ -146,6 +146,59 @@ class Pet {
 		}
 
 		return '';
+	}
+
+	/**
+	 * @param $item
+	 * @param $value
+	 *
+	 * @return $this
+	 */
+	public function setInfoItem( $item, $value )
+	{
+		$this->setItem( 'info', $item, $value );
+
+		return $this;
+	}
+
+	/**
+	 * I guess you can't assign a value like this `$this->$property[ $item ] = $value;`
+	 * So that's why there is a temp array there.
+	 *
+	 * @param $property
+	 * @param $item
+	 * @param $value
+	 *
+	 * @return $this
+	 */
+	public function setItem( $property, $item, $value )
+	{
+		$array = $this->$property;
+		if ( $array === NULL )
+		{
+			$array = array();
+		}
+
+		$array[ $item ] = $value;
+		$this->$property = $array;
+
+		return $this;
+	}
+
+	public function setInfoItemsFromPost()
+	{
+		$this->setItemsFromPost( 'info' );
+	}
+
+	public function setItemsFromPost( $property )
+	{
+		foreach ( $_POST as $key => $val )
+		{
+			if ( Entry::canAddItem( $key ) )
+			{
+				$this->setItem( $property, $key, $val );
+			}
+		}
 	}
 
 	/**

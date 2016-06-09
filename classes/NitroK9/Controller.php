@@ -540,6 +540,14 @@ class Controller {
 							->setServicesItemsFromPost();
 						
 						break;
+					
+					case Entry::STEP_PET_AGGRESSION:
+
+						$entry->getPets()[ $entry->getCurrentPet() ]
+							->setAggressionItemsFromPost();
+
+						break;
+						
 				}
 
 				if ( $this->getErrorCount() == 0 )

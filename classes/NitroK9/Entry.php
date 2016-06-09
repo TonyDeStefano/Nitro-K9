@@ -1141,7 +1141,7 @@ class Entry {
 	 * @param string $type
 	 * @param array $options
 	 */
-	public static function drawFormRow( $name, $label, $is_required, $default_value="", $type='text', $options=array() )
+	public static function drawFormRow( $name, $label, $is_required, $default_value="", $type='text', $options=array(), $wider=FALSE )
 	{
 		/** @var Controller $nitro_k9_controller */
 		global $nitro_k9_controller;
@@ -1155,10 +1155,10 @@ class Entry {
 
 		echo '
 			<div class="form-group ' . ( ( in_array( $name, $nitro_k9_controller->getErrorFieldNames() ) ) ? 'has-error' : '' ) . '">
-				<label for="' . $uniqid . '" class="col-sm-3 control-label"> 
+				<label for="' . $uniqid . '" class="col-sm-' . ( ( $wider ) ? '5' : '3' ) . ' control-label"> 
 		        ' . ( ( $is_required ) ? '<span style="color:red">*</span>' : '' ) . $label . '
 		        </label>
-				<div class="col-sm-9">';
+				<div class="col-sm-' . ( ( $wider ) ? '7' : '9' ) . '">';
 
 		switch ( $type )
 		{
@@ -1178,17 +1178,17 @@ class Entry {
 
 			case 'email':
 
-				echo '<input type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';
+				echo '<input type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
 				break;
 
 			case 'textarea':
 
-				echo '<textarea name="' . $name . '" id="' . $uniqid . '" class="form-control">' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '</textarea>';
+				echo '<textarea name="' . $name . '" id="' . $uniqid . '" class="form-control">' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '</textarea>';
 				break;
 
 			default:
 
-				echo '<input name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[$name] ) ) ? htmlspecialchars( $_POST[$name] ) : htmlspecialchars( $default_value ) ) . '">';
+				echo '<input name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
 		}
 
         echo '

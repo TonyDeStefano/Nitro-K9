@@ -356,6 +356,33 @@ if ( $make_new_entry )
 			<?php echo $pet->getInfoItem( 'name' ); ?>
 		</h2>
 
+		<p>Please answer the following questions to the best of your ability:</p>
+
+		<?php $categories = \NitroK9\Pet::getAgressionQuestions(); ?>
+
+		<?php foreach ( $categories as $category => $questions ) { ?>
+
+			<h2><?php echo $category; ?></h2>
+
+			<?php
+
+			foreach ( $questions as $question )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$question[1],
+					$question[0],
+					FALSE,
+					$pet->getAggressionItem( $question[1] ),
+					( isset( $question[2] ) ) ? $question[2] : 'textarea',
+					( isset( $question[3] ) ) ? $question[3] : array(),
+					TRUE
+				);
+			}
+
+			?>
+
+		<?php } ?>
+
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_CONFIRM ) { ?>
 
 		<h2>Confirmation</h2>

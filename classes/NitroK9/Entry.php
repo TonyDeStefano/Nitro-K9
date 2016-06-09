@@ -1196,6 +1196,73 @@ class Entry {
 			</div>';
 	}
 
+	/**
+	 * @param PriceGroup $price_group
+	 * @param Pet $pet
+	 */
+	public static function drawFormPriceRow( &$price_group, &$pet )
+	{
+		if ( ! $price_group->isActive() )
+		{
+			return;
+		}
+
+		echo '
+			<div class="form-group">
+				<div class="col-sm-8"> 
+		            <strong>' . $price_group->getTitle() . '</strong>
+		        </div>';
+
+		foreach( $price_group->getPrices() as $index => $price )
+		{
+			if ( ! $price->isActive() )
+			{
+				continue;
+			}
+
+			if ( $price_group->getPriceCount() > 1 )
+			{
+				echo '
+					</div>
+					<div class="form-group">
+					<div class="col-sm-7 col-sm-offset-1"> 
+			            ' . $price->getTitle() . '
+			        </div>';
+			}
+
+			echo '
+				<div class="col-sm-2">';
+
+			if ( $price->getPrice() > 0 )
+			{
+				echo '$' . number_format( $price->getPrice(), 2 );
+			}
+
+			echo '
+				</div>
+				<div class="col-sm-2">';
+
+			$value = $pet->getServicesItem( 'price_' . $price_group->getId() );
+
+			if ( $price_group->getPriceCount() == 1 )
+			{
+				echo '
+					<input type="checkbox" name="price_' . $price_group->getId() . '" value="' . $index . '"' . ( ( strlen( $value ) > 0 && $value == $index ) ? ' checked' : '' ) . '>';
+			}
+			else
+			{
+				echo '
+					<input type="radio" name="price_' . $price_group->getId() . '" value="' . $index . '"' . ( ( strlen( $value ) > 0 && $value == $index ) ? ' checked' : '' ) . '>';
+			}
+
+			echo '
+				</div>';
+		}
+
+		echo '
+			</div>';
+	}
+
 	public function nextStep()
 	{
 		switch ( $this->getCurrentStep() )
@@ -1236,6 +1303,26 @@ class Entry {
 					$this
 						->setCurrentPet( 0 )
 						->setCurrentStep( self::STEP_PET_SERVICES );
+				}
+				else
+				{
+					$this->setCurrentPet( $this->getCurrentPet() + 1 );
+				}
+				break;
+
+			case self::STEP_PET_SERVICES:
+				if ( count( $this->getPets() ) == $this->getCurrentPet() + 1 )
+				{
+					if ( $this->getAggressiveCount() > 0 )
+					{
+						$this
+							->setCurrentPet( $this->getAggressiveNumbers()[0] )
+							->setCurrentStep( self::STEP_PET_AGGRESSION );
+					}
+					else
+					{
+						$this->setCurrentStep( self::STEP_CONFIRM );
+					}
 				}
 				else
 				{
@@ -1445,7 +1532,14 @@ class Entry {
 			case self::STEP_PET_SERVICES:
 				if ( $this->getCurrentPet() == count( $this->getPets() ) - 1 )
 				{
-					return 'Aggression??';
+					if ( $this->getAggressiveCount() > 0 )
+					{
+						return 'Aggression QA';
+					}
+					else
+					{
+						return 'Confirmation';
+					}
 				}
 				else
 				{
@@ -1456,6 +1550,11 @@ class Entry {
 		return '';
 	}
 
+	/**
+	 * @param string $item
+	 *
+	 * @return bool
+	 */
 	public static function canAddItem( $item )
 	{
 		$excludes = array(
@@ -1463,9 +1562,49 @@ class Entry {
 			'_wp_http_referer',
 			'nitro_k9_id',
 			'nitro_k9_hash',
-			'next_step'
+			'next_step',
+			'prior_step',
+			'add_owner',
+			'remove_owner',
+			'remove_pet'
 		);
 
 		return ( substr( $item, 0, 9 ) !== 'required_' && ! in_array( $item, $excludes ) );
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getAggressiveCount()
+	{
+		$count = 0;
+
+		foreach ( $this->getPets() as $pet )
+		{
+			if ( $pet->isAggressive() )
+			{
+				$count++;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAggressiveNumbers()
+	{
+		$numbers = array();
+
+		foreach ( $this->getPets() as $index => $pet )
+		{
+			if ( $pet->isAggressive() )
+			{
+				$numbers[] = $index;
+			}
+		}
+
+		return $numbers;
 	}
 }

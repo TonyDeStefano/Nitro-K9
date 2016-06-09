@@ -27,6 +27,7 @@ class Pet {
 		if ( $json !== NULL )
 		{
 			$array = json_decode( $json, TRUE );
+
 			if ( is_array( $array ) )
 			{
 				if ( isset( $array['is_aggressive'] ) )
@@ -187,7 +188,16 @@ class Pet {
 
 	public function setInfoItemsFromPost()
 	{
-		$this->setItemsFromPost( 'info' );
+		$this
+			->setInfo( NULL )
+			->setItemsFromPost( 'info' );
+	}
+
+	public function setServicesItemsFromPost()
+	{
+		$this
+			->setServices( NULL )
+			->setItemsFromPost( 'services' );
 	}
 
 	public function setItemsFromPost( $property )

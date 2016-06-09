@@ -1,5 +1,7 @@
 <?php
 
+/** @var \NitroK9\Controller $this */
+
 $make_new_entry = TRUE;
 
 if ( isset( $_GET['nitro_k9_id'] ) && isset( $_GET['nitro_k9_hash'] ) )
@@ -221,6 +223,136 @@ if ( $make_new_entry )
 
 		<h2>
 			Services for
+			<?php echo $pet->getInfoItem( 'name' ); ?>
+		</h2>
+
+		<p>Please selected the services that you are interested in for your pet:</p>
+
+		<?php if ( $pet->getType() == \NitroK9\Pet::TYPE_LARGE_DOG ) { ?>
+
+			<h2>Nitro Dog Training</h2>
+
+			<?php if ( $pet->isAggressive() ) { ?>
+
+				<?php
+
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_AGGRESSIVE_EVAL ], $pet );
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_AGGRESSIVE_HOURLY ], $pet );
+				
+				?>
+
+			<?php } else { ?>
+
+				<?php
+
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_STANDARD_EVAL ], $pet );
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_STANDARD_HOURLY ], $pet );
+
+				?>
+
+			<?php } ?>
+
+			<?php
+
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_ON_1 ], $pet );
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_ON_2 ], $pet );
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_OFF_1 ], $pet );
+
+			?>
+
+		<?php } elseif ( $pet->getType() == \NitroK9\Pet::TYPE_SMALL_DOG ) { ?>
+
+			<h2>Mini Heroes Training</h2>
+
+			<?php if ( $pet->isAggressive() ) { ?>
+
+				<?php
+
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_AGGRESSIVE_EVAL ], $pet );
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_AGGRESSIVE_HOURLY ], $pet );
+
+				?>
+
+			<?php } else { ?>
+
+				<?php
+
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_STANDARD_EVAL ], $pet );
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_STANDARD_HOURLY ], $pet );
+
+				?>
+
+			<?php } ?>
+
+			<?php
+
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_ON_1 ], $pet );
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_ON_2 ], $pet );
+			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_OFF_1 ], $pet );
+
+			?>
+
+
+		<?php } ?>
+
+		<h2>Boarding</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOARDING_PER_NIGHT ], $pet );
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOARDING_NIGHTS ], $pet );
+
+		?>
+
+		<h2>Board &amp; Train</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOOT_CAMP ], $pet );
+
+		?>
+
+		<h2>Pet Sitting</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::PET_SITTING ], $pet );
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::PET_SITTING_VISITS ], $pet );
+
+		?>
+
+		<h2>Doggie Day Care</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_DAY_CARE ], $pet );
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_DAY_CARE_PACKAGES ], $pet );
+
+		?>
+
+		<h2>Dog Walking</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_WALKING ], $pet );
+
+		?>
+
+		<h2>Personal Protection (Ring of Fire)</h2>
+
+		<?php
+
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_PERSONAL_PROTECTION_HOURLY ], $pet );
+		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_PERSONAL_PROTECTION ], $pet );
+
+		?>
+
+	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_AGGRESSION ) { ?>
+
+		<?php $pet = $entry->getPets()[ $entry->getCurrentPet() ]; ?>
+
+		<h2>
+			Aggression Questions for
 			<?php echo $pet->getInfoItem( 'name' ); ?>
 		</h2>
 

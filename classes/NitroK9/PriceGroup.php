@@ -133,6 +133,14 @@ class PriceGroup {
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getPriceCount()
+	{
+		return count ( $this->getPrices() );
+	}
+
+	/**
 	 * @param Price $price
 	 */
 	public function addPrice( $price )
@@ -154,23 +162,23 @@ class PriceGroup {
 		$price_groups = [];
 
 		$default_prices = array(
-			1 => array(
+			self::DOG_LG_AGGRESSIVE_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Aggressive Large Dog)',
 				'price' => 50
 			),
-			2 => array(
+			self::DOG_LG_AGGRESSIVE_HOURLY => array(
 				'title' => 'Hourly Training Fee (Aggressive Large Dog)',
 				'price' => 125
 			),
-			3 => array(
+			self::DOG_LG_STANDARD_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Standard Large Dog)',
 				'price' => 35
 			),
-			4 => array(
+			self::DOG_LG_STANDARD_HOURLY => array(
 				'title' => 'Hourly Training Fee (Standard Large Dog)',
 				'price' => 125
 			),
-			5 => array(
+			self::DOG_LG_HANDS_ON_1 => array(
 				'title' => 'Nitro Dog Hands On - Level 1',
 				'prices' => array(
 					array(
@@ -187,7 +195,7 @@ class PriceGroup {
 					)
 				)
 			),
-			6 => array(
+			self::DOG_LG_HANDS_ON_2 => array(
 				'title' => 'Nitro Dog Hands On - Level 2',
 				'prices' => array(
 					array(
@@ -204,7 +212,7 @@ class PriceGroup {
 					)
 				)
 			),
-			7 => array(
+			self::DOG_LG_HANDS_OFF_1 => array(
 				'title' => 'Nitro Dog Hands Off - Level 1',
 				'prices' => array(
 					array(
@@ -221,23 +229,23 @@ class PriceGroup {
 					)
 				)
 			),
-			8 => array(
+			self::DOG_SM_AGGRESSIVE_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Aggressive Small Dog)',
 				'price' => 50
 			),
-			9 => array(
+			self::DOG_SM_AGGRESSIVE_HOURLY => array(
 				'title' => 'Hourly Training Fee (Aggressive Small Dog)',
 				'price' => 125
 			),
-			10 => array(
+			self::DOG_SM_STANDARD_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Standard Small Dog)',
 				'price' => 35
 			),
-			11 => array(
+			self::DOG_SM_STANDARD_HOURLY => array(
 				'title' => 'Hourly Training Fee (Standard Small Dog)',
 				'price' => 125
 			),
-			12 => array(
+			self::DOG_SM_HANDS_ON_1 => array(
 				'title' => 'Mini Heroes Hands On - Level 1',
 				'prices' => array(
 					array(
@@ -254,7 +262,7 @@ class PriceGroup {
 					)
 				)
 			),
-			13 => array(
+			self::DOG_SM_HANDS_ON_2 => array(
 				'title' => 'Mini Heroes Hands On - Level 2',
 				'prices' => array(
 					array(
@@ -271,7 +279,7 @@ class PriceGroup {
 					)
 				)
 			),
-			14 => array(
+			self::DOG_SM_HANDS_OFF_1 => array(
 				'title' => 'Mini Heroes Hands Off - Level 1',
 				'prices' => array(
 					array(
@@ -288,11 +296,11 @@ class PriceGroup {
 					)
 				)
 			),
-			15 => array(
+			self::DOG_BOARDING_PER_NIGHT => array(
 				'title' => 'Boarding Per Night',
 				'price' => 50
 			),
-			16 => array(
+			self::DOG_BOARDING_NIGHTS => array(
 				'title' => 'Boarding Nights',
 				'prices' => array(
 					array(
@@ -329,7 +337,7 @@ class PriceGroup {
 					)
 				)
 			),
-			17 => array(
+			self::DOG_BOOT_CAMP => array(
 				'title' => '24 Hour Overnight Boot Camp',
 				'prices' => array(
 					array(
@@ -341,16 +349,16 @@ class PriceGroup {
 						'price' => 750
 					),
 					array(
-						'title' => '14 Night2',
+						'title' => '14 Nights',
 						'price' => 1350
 					)
 				)
 			),
-			18 => array(
+			self::PET_SITTING => array(
 				'title' => 'Pet Sitting',
 				'price' => 110
 			),
-			19 => array(
+			self::PET_SITTING_VISITS => array(
 				'title' => 'Pet Sitting Visits',
 				'prices' => array(
 					array(
@@ -387,7 +395,7 @@ class PriceGroup {
 					)
 				)
 			),
-			20 => array(
+			self::DOG_DAY_CARE => array(
 				'title' => 'Doggie Day Care',
 				'prices' => array(
 					array(
@@ -404,7 +412,7 @@ class PriceGroup {
 					)
 				)
 			),
-			21 => array(
+			self::DOG_DAY_CARE_PACKAGES => array(
 				'title' => 'Doggie Day Care Packages',
 				'prices' => array(
 					array(
@@ -425,7 +433,7 @@ class PriceGroup {
 					)
 				)
 			),
-			22 => array(
+			self::DOG_WALKING => array(
 				'title' => 'Dog Walking',
 				'prices' => array(
 					array(
@@ -446,7 +454,7 @@ class PriceGroup {
 					)
 				)
 			),
-			23 => array(
+			self::DOG_PERSONAL_PROTECTION => array(
 				'title' => 'Personal Protection (Ring of Fire)',
 				'prices' => array(
 					array(
@@ -463,11 +471,11 @@ class PriceGroup {
 					)
 				)
 			),
-			24 => array(
+			self::DOG_PERSONAL_PROTECTION_HOURLY => array(
 				'title' => 'Personal Protection Hourly Rate',
 				'price' => 160
 			),
-			25 => array(
+			self::CAT_DAILY_VISITS => array(
 				'title' => 'Cat Daily Visits',
 				'prices' => array(
 					array(

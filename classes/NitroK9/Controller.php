@@ -533,6 +533,13 @@ class Controller {
 							->setInfoItemsFromPost();
 
 						break;
+					
+					case Entry::STEP_PET_SERVICES:
+
+						$entry->getPets()[ $entry->getCurrentPet() ]
+							->setServicesItemsFromPost();
+						
+						break;
 				}
 
 				if ( $this->getErrorCount() == 0 )

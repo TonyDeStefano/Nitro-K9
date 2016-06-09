@@ -356,6 +356,10 @@ if ( $make_new_entry )
 			<?php echo $pet->getInfoItem( 'name' ); ?>
 		</h2>
 
+	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_CONFIRM ) { ?>
+
+		<h2>Confirmation</h2>
+
 	<?php } ?>
 
 	<div class="well clearfix nitro-k9-buttons">

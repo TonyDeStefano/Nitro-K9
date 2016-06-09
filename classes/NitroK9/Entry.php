@@ -1330,6 +1330,17 @@ class Entry {
 				}
 				break;
 
+			case self::STEP_PET_AGGRESSION:
+				if ( $this->getCurrentPet() == $this->getLastAggressiveNumber() )
+				{
+					$this->setCurrentStep( self::STEP_CONFIRM );
+				}
+				else
+				{
+					$this->setCurrentPet( $this->getNextAggressiveNumber() );
+				}
+				break;
+
 			default:
 				$this->setCurrentStep( self::STEP_BIO );
 		}
@@ -1388,6 +1399,34 @@ class Entry {
 				else
 				{
 					$this->setCurrentPet( $this->getCurrentPet() - 1 );
+				}
+				break;
+
+			case self::STEP_PET_AGGRESSION:
+				if ( $this->getCurrentPet() == $this->getFirstAggressiveNumber() )
+				{
+					$this
+						->setCurrentPet( count( $this->getPets() ) - 1 )
+						->setCurrentStep( self::STEP_PET_SERVICES );
+				}
+				else
+				{
+					$this->setCurrentPet( $this->getPriorAggressiveNumber() );
+				}
+				break;
+
+			case self::STEP_CONFIRM:
+				if ( $this->getAggressiveCount() > 0 )
+				{
+					$this
+						->setCurrentPet( $this->getLastAggressiveNumber() )
+						->setCurrentStep( self::STEP_PET_AGGRESSION );
+				}
+				else
+				{
+					$this
+						->setCurrentPet( count( $this->getPets() ) - 1 )
+						->setCurrentStep( self::STEP_PET_SERVICES );
 				}
 				break;
 
@@ -1463,6 +1502,26 @@ class Entry {
 				{
 					return 'Services for ' . $this->getPets()[ $this->getCurrentPet() - 1 ]->getInfoItem( 'name' );
 				}
+
+			case self::STEP_PET_AGGRESSION:
+				if ( $this->getCurrentPet() == $this->getFirstAggressiveNumber() )
+				{
+					return 'Services for ' . $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' );
+				}
+				else
+				{
+					return 'Aggression QA for ' . $this->getPets()[ $this->getPriorAggressiveNumber() ]->getInfoItem( 'name' );
+				}
+
+			case self::STEP_CONFIRM:
+				if ( $this->getAggressiveCount() > 0 )
+				{
+					return 'Aggression QA for ' . $this->getPets()[ $this->getLastAggressiveNumber() ]->getInfoItem( 'name' );
+				}
+				else
+				{
+					return 'Services for ' . $this->getPets()[ count( $this->getPets() ) - 1 ]->getInfoItem( 'name' );
+				}
 		}
 
 		return '';
@@ -1534,7 +1593,7 @@ class Entry {
 				{
 					if ( $this->getAggressiveCount() > 0 )
 					{
-						return 'Aggression QA';
+						return 'Aggression QA for ' . $this->getPets()[ $this->getFirstAggressiveNumber() ]->getInfoItem( 'name' );
 					}
 					else
 					{
@@ -1545,6 +1604,17 @@ class Entry {
 				{
 					return 'Services for ' . $this->getPets()[ $this->getCurrentPet() + 1 ]->getInfoItem( 'name' );
 				}
+
+			case self::STEP_PET_AGGRESSION:
+				if ( $this->getCurrentPet() == $this->getLastAggressiveNumber() )
+				{
+					return 'Confirmation';
+				}
+				else
+				{
+					return 'Aggression QA for ' . $this->getPets()[ $this->getNextAggressiveNumber() ]->getInfoItem( 'name' );
+				}
+
 		}
 
 		return '';
@@ -1606,5 +1676,43 @@ class Entry {
 		}
 
 		return $numbers;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getFirstAggressiveNumber()
+	{
+		$numbers = $this->getAggressiveNumbers();
+		return $numbers[ 0 ];
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getLastAggressiveNumber()
+	{
+		$numbers = $this->getAggressiveNumbers();
+		return $numbers[ count( $numbers ) - 1 ];
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNextAggressiveNumber()
+	{
+		$numbers = $this->getAggressiveNumbers();
+		$pos = array_search( $this->current_pet, $numbers );
+		return $numbers[ $pos + 1 ];
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPriorAggressiveNumber()
+	{
+		$numbers = $this->getAggressiveNumbers();
+		$pos = array_search( $this->current_pet, $numbers );
+		return $numbers[ $pos - 1 ];
 	}
 }

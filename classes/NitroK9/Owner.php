@@ -157,6 +157,9 @@ class Owner {
 					array( 'em_work_phone', 'Work Phone', FALSE, $this->getInfoItem( 'em_work_phone' ) ),
 					array( 'em_cell_phone', 'Cell Phone', FALSE, $this->getInfoItem( 'em_cell_phone' ) )
 				);
+
+			default:
+				return array();
 		}
 	}
 }

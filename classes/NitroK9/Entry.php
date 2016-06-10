@@ -1140,6 +1140,7 @@ class Entry {
 	 * @param string $default_value
 	 * @param string $type
 	 * @param array $options
+	 * @param bool $wider
 	 */
 	public static function drawFormRow( $name, $label, $is_required, $default_value="", $type='text', $options=array(), $wider=FALSE )
 	{
@@ -1194,6 +1195,26 @@ class Entry {
         echo '
 				</div>
 			</div>';
+	}
+
+	/**
+	 * @param $label
+	 * @param $value
+	 */
+	public static function drawConfirmationRow( $label, $value )
+	{
+		if ( strlen( $value ) > 0 )
+		{
+			echo '
+				<div class="row">
+					<div class="col-sm-6"> 
+				        <strong>' . $label . '</strong>
+				    </div>
+					<div class="col-sm-6">
+						' . $value . '
+					</div>
+				</div>';
+		}
 	}
 
 	/**
@@ -1257,6 +1278,54 @@ class Entry {
 
 			echo '
 				</div>';
+		}
+
+		echo '
+			</div>';
+	}
+
+	/**
+	 * @param PriceGroup $price_group
+	 * @param Pet $pet
+	 */
+	public static function drawConfirmationPriceRow( &$price_group, &$pet )
+	{
+		echo '
+			<div class="row">
+				<div class="col-sm-6"> 
+		            <strong>' . $price_group->getTitle() . '</strong>
+		        </div>';
+
+		foreach( $price_group->getPrices() as $index => $price )
+		{
+			$value = $pet->getServicesItem( 'price_' . $price_group->getId() );
+
+			if ( strlen( $value ) > 0 && $value == $index )
+			{
+				if ( $price_group->getPriceCount() > 1 )
+				{
+					echo '
+						</div>
+						<div class="row">
+							<div class="col-sm-5 col-sm-offset-1"> 
+					            ' . $price->getTitle() . '
+					        </div>';
+				}
+
+				echo '<div class="col-sm-6">';
+
+				if ( $price->getPrice() > 0 )
+				{
+					echo '$' . number_format( $price->getPrice(), 2 );
+				}
+				else
+				{
+					echo 'X';
+				}
+
+				echo '</div>';
+
+			}
 		}
 
 		echo '

@@ -5,8 +5,8 @@ namespace NitroK9;
 class Controller {
 
 	const VERSION = '1.0.0';
-	const VERSION_CSS = '1.0.0';
-	const VERSION_JS = '1.0.0';
+	const VERSION_CSS = '1.0.1';
+	const VERSION_JS = '1.0.1';
 
 	const OPTION_VERSION = 'nitro_k9_version';
 

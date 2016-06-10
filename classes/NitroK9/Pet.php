@@ -296,16 +296,18 @@ class Pet {
 	}
 
 	/**
+	 * @param bool $for_confirmation
+	 *
 	 * @return array
 	 */
-	public function getInfoQuestions()
+	public function getInfoQuestions( $for_confirmation=FALSE )
 	{
-		return array(
+		$return = array(
 			'' => array(
 				array( 'name', 'Name', TRUE, $this->getInfoItem( 'name' ) ),
 				array( 'breed', 'Breed', TRUE, $this->getInfoItem( 'breed' ) ),
 				array( 'color', 'Color', TRUE, $this->getInfoItem( 'color' ) ),
-				array( 'gender', 'Gender', TRUE, $this->getInfoItem( 'gender' ), 'select', array( 'Male' => 'M', 'Female' => 'F' ) ),
+				array( 'gender', 'Gender', TRUE, $this->getInfoItem( 'gender' ), 'select', array( 'Male' => 'Male', 'Female' => 'Female' ) ),
 				array( 'dob', 'Date of Birth', FALSE, $this->getInfoItem( 'dob' ) ),
 				array( 'age', 'Age', FALSE, $this->getInfoItem( 'age' ) ),
 				array( 'weight', 'Weight', FALSE, $this->getInfoItem( 'weight' ) ),
@@ -326,21 +328,44 @@ class Pet {
 			),
 			'Behavior' => array(
 				array( 'problems', 'List any problems your pet has with people, pets or situations', FALSE, $this->getInfoItem( 'problems' ), 'textarea' ),
-				array( 'snapped', 'Has your pet ever snapped at anyone?', FALSE, $this->getInfoItem( 'snapped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
-				array( 'bitten', 'Has your pet ever bitten another animal?', FALSE, $this->getInfoItem( 'bitten' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
-				array( 'share', 'Will your pet share toys with other animals?', FALSE, $this->getInfoItem( 'share' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
-				array( 'jumped', 'Has your pet ever jumped a fence or barrier?', FALSE, $this->getInfoItem( 'jumped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'snapped', 'Has your pet ever snapped at anyone?', FALSE, $this->getInfoItem( 'snapped' ), 'select', array( 'No' => 'No', 'Yes' => 'Yes' ) ),
+				array( 'bitten', 'Has your pet ever bitten another animal?', FALSE, $this->getInfoItem( 'bitten' ), 'select', array( 'No' => 'No', 'Yes' => 'Yes' ) ),
+				array( 'share', 'Will your pet share toys with other animals?', FALSE, $this->getInfoItem( 'share' ), 'select', array( 'No' => 'No', 'Yes' => 'Yes' ) ),
+				array( 'jumped', 'Has your pet ever jumped a fence or barrier?', FALSE, $this->getInfoItem( 'jumped' ), 'select', array( 'No' => 'No', 'Yes' => 'Yes' ) ),
 				array( 'restrictions', 'List any restrictions that should be placed on your pet\'s activities', FALSE, $this->getInfoItem( 'restrictions' ), 'textarea' ),
-				array( 'mark_or_spray', 'Does your pet mark or spray inside the house?', FALSE, $this->getInfoItem( 'mark_or_spray' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'mark_or_spray', 'Does your pet mark or spray inside the house?', FALSE, $this->getInfoItem( 'mark_or_spray' ), 'select', array( 'No' => 'No', 'Yes' => 'Yes' ) ),
 				array( 'anything_else', 'Anything else you would like to share?', FALSE, $this->getInfoItem( 'anything_else' ), 'textarea' ),
 			)
 		);
+
+		if ( $for_confirmation )
+		{
+			foreach ( $return as $category => $questions )
+			{
+				foreach ( $questions as $index => $question )
+				{
+					if ( strlen( $question[3] ) == 0 )
+					{
+						unset( $return[ $category ][ $index ] );
+					}
+				}
+
+				if ( count( $return[ $category ] ) == 0 )
+				{
+					unset ( $return[ $category ] );
+				}
+			}
+		}
+
+		return $return;
 	}
 
 	/**
+	 * @param bool $for_confirmation
+	 *
 	 * @return array
 	 */
-	public function getPricingQuestions()
+	public function getPricingQuestions( $for_confirmation=FALSE )
 	{
 		$categories = array();
 
@@ -414,10 +439,24 @@ class Pet {
 			PriceGroup::DOG_PERSONAL_PROTECTION_HOURLY,
 			PriceGroup::DOG_PERSONAL_PROTECTION
 		);
-		
-		foreach ( $categories as $category => $price_groups )
+
+		if ( $for_confirmation )
 		{
-			
+			foreach ( $categories as $category => $price_groups )
+			{
+				foreach ( $price_groups as $index => $price_group )
+				{
+					if ( strlen( $this->getServicesItem( 'price_' . $price_group ) ) == 0 )
+					{
+						unset ( $categories[ $category ][ $index ] );
+					}
+				}
+
+				if ( count( $categories[ $category ] ) == 0 )
+				{
+					unset ( $categories[ $category ] );
+				}
+			}
 		}
 		
 		return $categories;
@@ -425,15 +464,16 @@ class Pet {
 
 	/**
 	 * @param int $section
+	 * @param bool $for_confirmation
 	 *
 	 * @return array
 	 */
-	public static function getAggressionQuestions( $section=1 )
+	public function getAggressionQuestions( $section=1, $for_confirmation=FALSE )
 	{
 		switch ( $section )
 		{
 			case 1:
-				return array(
+				$return = array(
 					'Basic Information' => array(
 						array( 'What is the main behavior problem or complaint?', 'main_problem' ),
 						array( 'Additional Problems?', 'additional_problems' ),
@@ -642,6 +682,8 @@ class Pet {
 						),
 					),
 				);
+				
+				break;
 
 			case 2:
 
@@ -656,7 +698,7 @@ class Pet {
 			
 			case 3:
 
-				return array(
+				$return =  array(
 					'Other Behaviors' => array(
 						array( 'Please describe what tricks your dog knows, if any:', 'tricks' ),
 						array( 'Does your dog jump up on you or others without permission?', 'jump_on_others', 'select', array( '' => '', 'Yes' => 'Yes', 'No' => 'No' ) ),
@@ -678,6 +720,8 @@ class Pet {
 						array( 'Type of rabies shot:', 'rabies_vax_type', 'select', array( '' => '', '1 Year' => '1 Year', '3 Year' => '3 Year' ) ),
 					),
 				);
+				
+				break;
 
 			case 4:
 
@@ -739,7 +783,7 @@ class Pet {
 
 			case 5:
 
-				return array(
+				$return = array(
 					'Aggression Towards People'	=> array(
 						array( 'Are attacks sudden and surprising?', 'sudden_attacks', 'select', array( '' => '', 'Yes' => 'Yes', 'No' => 'No' ) ),
 						array( 'Do the episodes appear unprovoked?', 'unprovoked', 'select', array( '' => '', 'Yes' => 'Yes', 'No' => 'No' ) ),
@@ -765,6 +809,67 @@ class Pet {
 						array( 'What was the circumstance?', 'snap_circumstance' ),
 					)
 				);
-		}	
+				
+				break;
+
+			default:
+
+				return array();
+		}
+		
+		if ( $for_confirmation )
+		{
+			foreach ( $return as $category => $questions )
+			{
+				foreach ( $questions as $index => $question )
+				{
+					if ( strlen( $this->getAggressionItem( $question[1] ) ) == 0 )
+					{
+						unset ( $return[ $category ][ $index ] );
+					}
+				}
+				
+				if ( count( $return[ $category ] ) == 0 )
+				{
+					unset ( $return[ $category ] );
+				}
+			}
+		}
+		
+		return $return;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasPercentAnswers()
+	{
+		return $this->hasAggressionAnswers( 'percent_' );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasScreenAnswers()
+	{
+		return $this->hasAggressionAnswers( 'screen_' );
+	}
+
+	/**
+	 * @param $prefix
+	 *
+	 * @return bool
+	 */
+	public function hasAggressionAnswers( $prefix )
+	{
+		foreach( $this->getAggression() as $key => $val )
+		{
+			if ( substr( $key, 0, strlen( $prefix ) ) == $prefix )
+			{
+				return TRUE;
+			}
+		}
+
+		return FALSE;
 	}
 }

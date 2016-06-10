@@ -250,7 +250,7 @@ if ( $make_new_entry )
 
 		<p>Please answer the following questions to the best of your ability:</p>
 
-		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 1 ); ?>
+		<?php $categories = $pet->getAggressionQuestions( 1 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 
@@ -279,7 +279,7 @@ if ( $make_new_entry )
 			What percent of the time does your dog obey the following commands for each member of the family?
 		</h2>
 
-		<?php $commands = \NitroK9\Pet::getAggressionQuestions( 2 ); ?>
+		<?php $commands = $pet->getAggressionQuestions( 2 ); ?>
 
 		<table class="table table-bordered table-striped">
 			<thead>
@@ -309,7 +309,7 @@ if ( $make_new_entry )
 			<?php } ?>
 		</table>
 
-		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 3 ); ?>
+		<?php $categories = $pet->getAggressionQuestions( 3 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 
@@ -346,7 +346,7 @@ if ( $make_new_entry )
 			'no' => 'No Reaction',
 			'na' => 'N/A'
 		);
-		$causes = \NitroK9\Pet::getAggressionQuestions( 4 );
+		$causes = $pet->getAggressionQuestions( 4 );
 
 		?>
 
@@ -373,7 +373,7 @@ if ( $make_new_entry )
 			<?php } ?>
 		</table>
 
-		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 5 ); ?>
+		<?php $categories = $pet->getAggressionQuestions( 5 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 
@@ -404,6 +404,241 @@ if ( $make_new_entry )
 		<p>Please confirm that the information below is accurate:</p>
 
 		<h2>Information About You</h2>
+
+		<div class="well">
+
+			<?php
+
+			$questions = array_merge( $entry->getInfoQuestions( 1 ), $entry->getInfoQuestions( 2 ) );
+
+			foreach ( $questions as $array )
+			{
+				\NitroK9\Entry::drawConfirmationRow(
+					$array[1],
+					$array[3]
+				);
+			}
+
+			?>
+
+		</div>
+
+		<?php
+
+		foreach ( $entry->getOwners() as $owner )
+		{
+			echo '
+				<h2>Information About ' . $owner->getInfoItem( 'first_name' ) . '</h2>
+				<div class="well">';
+
+			$questions = array_merge( $owner->getInfoQuestions( 1 ), $owner->getInfoQuestions( 2 ) );
+
+			foreach ( $questions as $array )
+			{
+				\NitroK9\Entry::drawConfirmationRow(
+					$array[1],
+					$array[3]
+				);
+			}
+
+			echo '</div>';
+		}
+
+		foreach ( $entry->getPets() as $pet )
+		{
+			echo '
+				<h2>Info About ' . $pet->getInfoItem( 'name' ) . '</h2>
+				<div class="well">';
+
+			$categories = $pet->getInfoQuestions( TRUE );
+
+			foreach ( $categories as $category => $questions )
+			{
+				if ( strlen( $category ) > 0 )
+				{
+					echo '<h4>' . $category . '</h4>';
+				}
+
+				foreach ( $questions as $array )
+				{
+					\NitroK9\Entry::drawConfirmationRow(
+						$array[1],
+						( $array[0] == 'is_aggressive' ) ? ( $pet->isAggressive() ) ? 'Yes' : 'No' : $array[3]
+					);
+				}
+			}
+
+			echo '</div>';
+		}
+
+		foreach ( $entry->getPets() as $pet )
+		{
+			echo '
+				<h2>Services for ' . $pet->getInfoItem( 'name' ) . '</h2>
+				<div class="well">';
+			
+			$categories = $pet->getPricingQuestions( TRUE );
+
+			foreach ( $categories as $category => $price_groups )
+			{
+				foreach( $price_groups as $price_group )
+				{
+					\NitroK9\Entry::drawConfirmationPriceRow( $this->price_groups[ $price_group ], $pet );
+				}
+			}
+			
+			echo '</div>';
+		}
+
+		foreach ( $entry->getPets() as $pet )
+		{
+			if ( $pet->isAggressive() )
+			{
+				echo '
+					<h2>Aggression Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
+					<div class="well">';
+
+				for ( $section=1; $section<=5; $section++ )
+				{
+					switch( $section )
+					{
+						case 1:
+						case 3:
+						case 5:
+
+							$categories = $pet->getAggressionQuestions( $section, TRUE );
+
+							foreach ( $categories as $category => $questions )
+							{
+								echo '<h4>' . $category . '</h4>';
+
+								foreach ( $questions as $question )
+								{
+									\NitroK9\Entry::drawConfirmationRow(
+										$question[0],
+										$pet->getAggressionItem( $question[1] )
+									);
+								}
+							}
+
+							break;
+
+						case 2:
+
+							if ( $pet->hasPercentAnswers() )
+							{
+								echo
+									'<h4>
+										What percent of the time does your dog obey the following commands for each member of the family?
+									</h4>';
+
+								$commands = $pet->getAggressionQuestions( $section );
+
+								echo '
+									<table class="table table-bordered table-striped">
+										<thead>
+											<tr>';
+												foreach ( $commands as $key => $command )
+												{
+													echo '<th>' . $command . '</th>';
+												}
+										echo '
+											</tr>
+										</thead>';
+										for ( $x=1; $x<=10; $x++ )
+										{
+											$show = FALSE;
+											foreach ( $commands as $key => $commmand )
+											{
+												if ( strlen( $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) ) > 0 )
+												{
+													$show = TRUE;
+													break;
+												}
+											}
+											if ( $show )
+											{
+												echo '<tr>';
+												foreach ( $commands as $key => $command )
+												{
+													echo '<td>' . $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) . '</td>';
+												}
+												echo '</tr>';
+											}
+										}
+								echo '</table>';
+							}
+
+							break;
+
+						case 4:
+
+							if ( $pet->hasScreenAnswers() )
+							{
+								echo '<h4>Aggression Screen</h4>';
+
+								$responses = array(
+									'growl' => 'Growl',
+									'snarl' => 'Snarl / Bare Teeth',
+									'snap' => 'Snap / Bite',
+									'no' => 'No Reaction',
+									'na' => 'N/A'
+								);
+
+								$causes = $pet->getAggressionQuestions( $section );
+
+								echo
+									'<table class="table table-bordered table-striped">
+										<thead>
+											<tr>
+												<th>Action</th>';
+												foreach ( $responses as $key => $response )
+												{
+													echo '<th>' .  $response . '</th>';
+												}
+									echo '
+											</tr>
+										</thead>';
+									foreach ( $causes as $index => $cause )
+									{
+										$show = FALSE;
+										foreach ( $responses as $key => $response )
+										{
+											if ( strlen( $pet->getAggressionItem( 'screen_' . $index . '_' . $key ) ) > 0 )
+											{
+												$show = TRUE;
+												break;
+											}
+										}
+										if ( $show )
+										{
+											echo '
+												<tr>
+													<th>' . $cause . '</th>';
+											foreach ( $responses as $key => $response )
+											{
+												echo '<td style="text-align:center">';
+												if ( strlen( $pet->getAggressionItem( 'screen_' . $index . '_' . $key ) ) )
+												{
+													echo 'X';
+												}
+												echo '</td>';
+											}
+											echo '</tr>';
+										}
+									}
+								echo '</table>';
+							}
+
+							break;
+					}
+				}
+
+				echo '</div>';
+			}
+		}
+
+		?>
 
 	<?php } ?>
 

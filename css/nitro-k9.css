@@ -1,8 +1,14 @@
-.nitro-k9-form h2 {
+.nitro-k9-form h2,
+.nitro-k9-form h3,
+.nitro-k9-form h4 {
     border-bottom: 2px solid #000;
 }
 
 .nitro-k9-buttons button {
     float: right;
     margin-left: 5px;
+}
+
+.nitro-k9-form .well h4:first-child {
+    margin-top: 0;
 }

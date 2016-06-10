@@ -1715,4 +1715,39 @@ class Entry {
 		$pos = array_search( $this->current_pet, $numbers );
 		return $numbers[ $pos - 1 ];
 	}
+
+	/**
+	 * @param int $section
+	 *
+	 * @return array
+	 */
+	public function getInfoQuestions( $section=1 )
+	{
+		switch ( $section )
+		{
+			case 1:
+				return array(
+					array( 'email', 'Email Address', TRUE, $this->getEmail(), 'email' ),
+					array( 'first_name', 'First Name', TRUE, $this->getFirstName() ),
+					array( 'last_name', 'Last Name', TRUE, $this->getLastName() ),
+					array( 'address', 'Address', TRUE, $this->getAddress() ),
+					array( 'city', 'City', TRUE, $this->getCity() ),
+					array( 'state', 'State', TRUE, $this->getState() ),
+					array( 'zip', 'Zip', TRUE, $this->getZip() ),
+					array( 'home_phone', 'Home Phone', FALSE, $this->getHomePhone() ),
+					array( 'work_phone', 'Work Phone', FALSE, $this->getWorkPhone() ),
+					array( 'cell_phone', 'Cell Phone', FALSE, $this->getCellPhone() ),
+					array( 'how_heard', 'How did you hear about us?', FALSE, $this->getHowHeard(), 'select', self::getAllHowHeards() )
+				);
+			
+			case 2:
+				return array(
+					array( 'em_contact', 'Emergency Contact', FALSE, $this->getEmContact() ),
+					array( 'em_relationship', 'Relationship', FALSE, $this->getEmRelationship() ),
+					array( 'em_home_phone', 'Home Phone', FALSE, $this->getEmHomePhone() ),
+					array( 'em_work_phone', 'Work Phone', FALSE, $this->getEmWorkPhone() ),
+					array( 'em_cell_phone', 'Cell Phone', FALSE, $this->getEmCellPhone() )
+				);
+		}
+	}
 }

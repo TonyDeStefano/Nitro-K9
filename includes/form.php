@@ -66,16 +66,19 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'email', 'Email Address', TRUE, $entry->getEmail(), 'email' );
-		\NitroK9\Entry::drawFormRow( 'first_name', 'First Name', TRUE, $entry->getFirstName() );
-		\NitroK9\Entry::drawFormRow( 'last_name', 'Last Name', TRUE, $entry->getLastName() );
-		\NitroK9\Entry::drawFormRow( 'address', 'Address', TRUE, $entry->getAddress() );
-		\NitroK9\Entry::drawFormRow( 'city', 'City', TRUE, $entry->getCity() );
-		\NitroK9\Entry::drawFormRow( 'state', 'State', TRUE, $entry->getState() );
-		\NitroK9\Entry::drawFormRow( 'zip', 'Zip', TRUE, $entry->getZip() );
-		\NitroK9\Entry::drawFormRow( 'home_phone', 'Home Phone', FALSE, $entry->getHomePhone() );
-		\NitroK9\Entry::drawFormRow( 'work_phone', 'Work Phone', FALSE, $entry->getWorkPhone() );
-		\NitroK9\Entry::drawFormRow( 'cell_phone', 'Cell Phone', FALSE, $entry->getCellPhone() );
+		$questions = $entry->getInfoQuestions( 1 );
+
+		foreach ( $questions as $array )
+		{
+			\NitroK9\Entry::drawFormRow(
+				$array[0],
+				$array[1],
+				$array[2],
+				$array[3],
+				( isset( $array[4] ) ) ? $array[4] : 'text',
+				( isset( $array[5] ) ) ? $array[5] : array()
+			);
+		}
 
 		?>
 
@@ -83,21 +86,23 @@ if ( $make_new_entry )
 
 			<?php
 
-			\NitroK9\Entry::drawFormRow( 'em_contact', 'Emergency Contact', FALSE, $entry->getEmContact() );
-			\NitroK9\Entry::drawFormRow( 'em_relationship', 'Relationship', FALSE, $entry->getEmRelationship() );
-			\NitroK9\Entry::drawFormRow( 'em_home_phone', 'Home Phone', FALSE, $entry->getEmHomePhone() );
-			\NitroK9\Entry::drawFormRow( 'em_work_phone', 'Work Phone', FALSE, $entry->getEmWorkPhone() );
-			\NitroK9\Entry::drawFormRow( 'em_cell_phone', 'Cell Phone', FALSE, $entry->getEmCellPhone() );
+			$questions = $entry->getInfoQuestions( 2 );
+
+			foreach ( $questions as $array )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$array[0],
+					$array[1],
+					$array[2],
+					$array[3],
+					( isset( $array[4] ) ) ? $array[4] : 'text',
+					( isset( $array[5] ) ) ? $array[5] : array()
+				);
+			}
 
 			?>
 
 		</div>
-
-		<?php
-
-		\NitroK9\Entry::drawFormRow( 'how_heard', 'How did you hear about us?', FALSE, $entry->getHowHeard(), 'select', \NitroK9\Entry::getAllHowHeards() );
-
-		?>
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_OWNER ) { ?>
 
@@ -112,16 +117,19 @@ if ( $make_new_entry )
 
 		<?php
 
-		\NitroK9\Entry::drawFormRow( 'email', 'Email Address', TRUE, $owner->getInfoItem( 'email' ), 'email' );
-		\NitroK9\Entry::drawFormRow( 'first_name', 'First Name', TRUE, $owner->getInfoItem( 'first_name' ) );
-		\NitroK9\Entry::drawFormRow( 'last_name', 'Last Name', TRUE, $owner->getInfoItem( 'last_name' ) );
-		\NitroK9\Entry::drawFormRow( 'address', 'Address', TRUE, $owner->getInfoItem( 'address' ) );
-		\NitroK9\Entry::drawFormRow( 'city', 'City', TRUE, $owner->getInfoItem( 'city' ) );
-		\NitroK9\Entry::drawFormRow( 'state', 'State', TRUE, $owner->getInfoItem( 'state' ) );
-		\NitroK9\Entry::drawFormRow( 'zip', 'Zip', TRUE, $owner->getInfoItem( 'zip' ) );
-		\NitroK9\Entry::drawFormRow( 'home_phone', 'Home Phone', FALSE, $owner->getInfoItem( 'home_phone' ) );
-		\NitroK9\Entry::drawFormRow( 'work_phone', 'Work Phone', FALSE, $owner->getInfoItem( 'work_phone' ) );
-		\NitroK9\Entry::drawFormRow( 'cell_phone', 'Cell Phone', FALSE, $owner->getInfoItem( 'cell_phone' ) );
+		$questions = $owner->getInfoQuestions( 1 );
+
+		foreach ( $questions as $array )
+		{
+			\NitroK9\Entry::drawFormRow(
+				$array[0],
+				$array[1],
+				$array[2],
+				$array[3],
+				( isset( $array[4] ) ) ? $array[4] : 'text',
+				( isset( $array[5] ) ) ? $array[5] : array()
+			);
+		}
 
 		?>
 
@@ -129,11 +137,19 @@ if ( $make_new_entry )
 
 			<?php
 
-			\NitroK9\Entry::drawFormRow( 'em_contact', 'Emergency Contact', FALSE, $owner->getInfoItem( 'em_contact' ) );
-			\NitroK9\Entry::drawFormRow( 'em_relationship', 'Relationship', FALSE, $owner->getInfoItem( 'em_relationship' ) );
-			\NitroK9\Entry::drawFormRow( 'em_home_phone', 'Home Phone', FALSE, $owner->getInfoItem( 'em_home_phone' ) );
-			\NitroK9\Entry::drawFormRow( 'em_work_phone', 'Work Phone', FALSE, $owner->getInfoItem( 'em_work_phone' ) );
-			\NitroK9\Entry::drawFormRow( 'em_cell_phone', 'Cell Phone', FALSE, $owner->getInfoItem( 'em_cell_phone' ) );
+			$questions = $owner->getInfoQuestions( 2 );
+
+			foreach ( $questions as $array )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$array[0],
+					$array[1],
+					$array[2],
+					$array[3],
+					( isset( $array[4] ) ) ? $array[4] : 'text',
+					( isset( $array[5] ) ) ? $array[5] : array()
+				);
+			}
 
 			?>
 
@@ -152,7 +168,12 @@ if ( $make_new_entry )
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_INFO ) { ?>
 
-		<?php $pet = $entry->getPets()[ $entry->getCurrentPet() ]; ?>
+		<?php
+
+		$pet = $entry->getPets()[ $entry->getCurrentPet() ];
+		$categories = $pet->getInfoQuestions();
+
+		?>
 
 		<h2>
 			Tell us about
@@ -166,56 +187,29 @@ if ( $make_new_entry )
 			<?php } ?>
 		</h2>
 
-		<?php
+		<?php foreach ( $categories as $category => $questions ) { ?>
 
-		\NitroK9\Entry::drawFormRow( 'name', 'Name', TRUE, $pet->getInfoItem( 'name' ) );
-		\NitroK9\Entry::drawFormRow( 'breed', 'Breed', TRUE, $pet->getInfoItem( 'breed' ) );
-		\NitroK9\Entry::drawFormRow( 'color', 'Color', TRUE, $pet->getInfoItem( 'color' ) );
-		\NitroK9\Entry::drawFormRow( 'gender', 'Gender', TRUE, $pet->getInfoItem( 'gender' ), 'select', array( 'Male' => 'M', 'Female' => 'F' ) );
-		\NitroK9\Entry::drawFormRow( 'dob', 'Date of Birth', FALSE, $pet->getInfoItem( 'dob' ) );
-		\NitroK9\Entry::drawFormRow( 'age', 'Age', FALSE, $pet->getInfoItem( 'age' ) );
-		\NitroK9\Entry::drawFormRow( 'weight', 'Weight', FALSE, $pet->getInfoItem( 'weight' ) );
-		\NitroK9\Entry::drawFormRow( 'is_aggressive', 'Aggressive?', TRUE, ( $pet->isAggressive() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) );
+			<?php if ( strlen( $category ) > 0 ) { ?>
+				<h2><?php echo $category; ?></h2>
+			<?php } ?>
 
-		?>
+			<?php
 
-		<h2>Identification</h2>
+			foreach ( $questions as $array )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$array[0],
+					$array[1],
+					$array[2],
+					$array[3],
+					( isset( $array[4] ) ) ? $array[4] : 'text',
+					( isset( $array[5] ) ) ? $array[5] : array()
+				);
+			}
 
-		<?php
+			?>
 
-		\NitroK9\Entry::drawFormRow( 'id_tag', 'ID Tag', FALSE, $pet->getInfoItem( 'id_tag' ) );
-		\NitroK9\Entry::drawFormRow( 'tattoo', 'Tattoo', FALSE, $pet->getInfoItem( 'tattoo' ) );
-		\NitroK9\Entry::drawFormRow( 'microchip', 'Microchip', FALSE, $pet->getInfoItem( 'microchip' ) );
-		\NitroK9\Entry::drawFormRow( 'vet', 'Veterinarian', FALSE, $pet->getInfoItem( 'vet' ) );
-		\NitroK9\Entry::drawFormRow( 'vet_phone', 'Vet Phone', FALSE, $pet->getInfoItem( 'vet_phone' ) );
-		\NitroK9\Entry::drawFormRow( 'medical_conditions', 'Medical Conditions', FALSE, $pet->getInfoItem( 'medical_conditions' ), 'textarea' );
-		\NitroK9\Entry::drawFormRow( 'medication', 'Medication and Dosage', FALSE, $pet->getInfoItem( 'medication' ), 'textarea' );
-
-		?>
-
-		<h2>Feeding</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormRow( 'food_provided_by', 'Food Provided By', FALSE, $pet->getInfoItem( 'food_provided_by' ), 'select', array( 'Nitro K9' => 'Nitro K9', 'Client' => 'Client' ) );
-		\NitroK9\Entry::drawFormRow( 'feed_instructions', 'Feeding Instructions', FALSE, $pet->getInfoItem( 'feed_instructions' ), 'textarea' );
-
-		?>
-
-		<h2>Behavior</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormRow( 'problems', 'List any problems your pet has with people, pets or situations', FALSE, $pet->getInfoItem( 'problems' ), 'textarea' );
-		\NitroK9\Entry::drawFormRow( 'snapped', 'Has your pet ever snapped at anyone?', FALSE, $pet->getInfoItem( 'snapped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) );
-		\NitroK9\Entry::drawFormRow( 'bitten', 'Has your pet ever bitten another animal?', FALSE, $pet->getInfoItem( 'bitten' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) );
-		\NitroK9\Entry::drawFormRow( 'share', 'Will your pet share toys with other animals?', FALSE, $pet->getInfoItem( 'share' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) );
-		\NitroK9\Entry::drawFormRow( 'jumped', 'Has your pet ever jumped a fence or barrier?', FALSE, $pet->getInfoItem( 'jumped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) );
-		\NitroK9\Entry::drawFormRow( 'restrictions', 'List any restrictions that should be placed on your pet\'s activities', FALSE, $pet->getInfoItem( 'restrictions' ), 'textarea' );
-		\NitroK9\Entry::drawFormRow( 'mark_or_spray', 'Does your pet mark or spray inside the house?', FALSE, $pet->getInfoItem( 'mark_or_spray' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) );
-		\NitroK9\Entry::drawFormRow( 'anything_else', 'Anything else you would like to share?', FALSE, $pet->getInfoItem( 'anything_else' ), 'textarea' );
-
-		?>
+		<?php } ?>
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_SERVICES ) { ?>
 
@@ -401,14 +395,16 @@ if ( $make_new_entry )
 				<tr>
 					<?php foreach ( $commands as $key => $command ) { ?>
 						<td>
-							<input
-								class="form-control"
-								name="percent_<?php echo $x; ?>_<?php echo $key; ?>"
-								value="<?php echo esc_html( $pet->getAggressionItem( 'percent_'.$x.'_'.$key ) ); ?>"
-								<?php if ( $key != 'name' ) { ?>
-									style="max-width:70px"
-								<?php } ?>
-							>
+							<label>
+								<input
+									class="form-control"
+									name="percent_<?php echo $x; ?>_<?php echo $key; ?>"
+									value="<?php echo esc_html( $pet->getAggressionItem( 'percent_'.$x.'_'.$key ) ); ?>"
+									<?php if ( $key != 'name' ) { ?>
+										style="max-width:70px"
+									<?php } ?>
+								>
+							</label>
 						</td>
 					<?php } ?>
 				</tr>
@@ -507,6 +503,9 @@ if ( $make_new_entry )
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_CONFIRM ) { ?>
 
 		<h2>Confirmation</h2>
+		<p>Please confirm that the information below is accurate:</p>
+
+		<h2>Information About You</h2>
 
 	<?php } ?>
 

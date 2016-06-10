@@ -125,4 +125,38 @@ class Owner {
 			'info' => $this->getInfo()
 		);
 	}
+
+	/**
+	 * @param int $section
+	 *
+	 * @return array
+	 */
+	public function getInfoQuestions( $section=1 )
+	{
+		switch ( $section )
+		{
+			case 1:
+				return array(
+					array( 'email', 'Email Address', TRUE, $this->getInfoItem( 'email' ), 'email' ),
+					array( 'first_name', 'First Name', TRUE, $this->getInfoItem( 'first_name' ) ),
+					array( 'last_name', 'Last Name', TRUE, $this->getInfoItem( 'last_name' ) ),
+					array( 'address', 'Address', TRUE, $this->getInfoItem( 'address' ) ),
+					array( 'city', 'City', TRUE, $this->getInfoItem( 'city' ) ),
+					array( 'state', 'State', TRUE, $this->getInfoItem( 'state' ) ),
+					array( 'zip', 'Zip', TRUE, $this->getInfoItem( 'zip' ) ),
+					array( 'home_phone', 'Home Phone', FALSE, $this->getInfoItem( 'home_phone' ) ),
+					array( 'work_phone', 'Work Phone', FALSE, $this->getInfoItem( 'work_phone' ) ),
+					array( 'cell_phone', 'Cell Phone', FALSE, $this->getInfoItem( 'cell_phone' ) )
+				);
+
+			case 2:
+				return array(
+					array( 'em_contact', 'Emergency Contact', FALSE, $this->getInfoItem( 'em_contact' ) ),
+					array( 'em_relationship', 'Relationship', FALSE, $this->getInfoItem( 'em_relationship' ) ),
+					array( 'em_home_phone', 'Home Phone', FALSE, $this->getInfoItem( 'em_home_phone' ) ),
+					array( 'em_work_phone', 'Work Phone', FALSE, $this->getInfoItem( 'em_work_phone' ) ),
+					array( 'em_cell_phone', 'Cell Phone', FALSE, $this->getInfoItem( 'em_cell_phone' ) )
+				);
+		}
+	}
 }

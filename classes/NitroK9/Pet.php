@@ -298,6 +298,49 @@ class Pet {
 	/**
 	 * @return array
 	 */
+	public function getInfoQuestions()
+	{
+		return array(
+			'' => array(
+				array( 'name', 'Name', TRUE, $this->getInfoItem( 'name' ) ),
+				array( 'breed', 'Breed', TRUE, $this->getInfoItem( 'breed' ) ),
+				array( 'color', 'Color', TRUE, $this->getInfoItem( 'color' ) ),
+				array( 'gender', 'Gender', TRUE, $this->getInfoItem( 'gender' ), 'select', array( 'Male' => 'M', 'Female' => 'F' ) ),
+				array( 'dob', 'Date of Birth', FALSE, $this->getInfoItem( 'dob' ) ),
+				array( 'age', 'Age', FALSE, $this->getInfoItem( 'age' ) ),
+				array( 'weight', 'Weight', FALSE, $this->getInfoItem( 'weight' ) ),
+				array( 'is_aggressive', 'Aggressive?', TRUE, ( $this->isAggressive() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
+			),
+			'Identification' => array(
+				array( 'id_tag', 'ID Tag', FALSE, $this->getInfoItem( 'id_tag' ) ),
+				array( 'tattoo', 'Tattoo', FALSE, $this->getInfoItem( 'tattoo' ) ),
+				array( 'microchip', 'Microchip', FALSE, $this->getInfoItem( 'microchip' ) ),
+				array( 'vet', 'Veterinarian', FALSE, $this->getInfoItem( 'vet' ) ),
+				array( 'vet_phone', 'Vet Phone', FALSE, $this->getInfoItem( 'vet_phone' ) ),
+				array( 'medical_conditions', 'Medical Conditions', FALSE, $this->getInfoItem( 'medical_conditions' ), 'textarea' ),
+				array( 'medication', 'Medication and Dosage', FALSE, $this->getInfoItem( 'medication' ), 'textarea' ),
+			),
+			'Feeding' => array(
+				array( 'food_provided_by', 'Food Provided By', FALSE, $this->getInfoItem( 'food_provided_by' ), 'select', array( 'Nitro K9' => 'Nitro K9', 'Client' => 'Client' ) ),
+				array( 'feed_instructions', 'Feeding Instructions', FALSE, $this->getInfoItem( 'feed_instructions' ), 'textarea' ),
+			),
+			'Behavior' => array(
+				array( 'problems', 'List any problems your pet has with people, pets or situations', FALSE, $this->getInfoItem( 'problems' ), 'textarea' ),
+				array( 'snapped', 'Has your pet ever snapped at anyone?', FALSE, $this->getInfoItem( 'snapped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'bitten', 'Has your pet ever bitten another animal?', FALSE, $this->getInfoItem( 'bitten' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'share', 'Will your pet share toys with other animals?', FALSE, $this->getInfoItem( 'share' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'jumped', 'Has your pet ever jumped a fence or barrier?', FALSE, $this->getInfoItem( 'jumped' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'restrictions', 'List any restrictions that should be placed on your pet\'s activities', FALSE, $this->getInfoItem( 'restrictions' ), 'textarea' ),
+				array( 'mark_or_spray', 'Does your pet mark or spray inside the house?', FALSE, $this->getInfoItem( 'mark_or_spray' ), 'select', array( 'No' => 'N', 'Yes' => 'Y' ) ),
+				array( 'anything_else', 'Anything else you would like to share?', FALSE, $this->getInfoItem( 'anything_else' ), 'textarea' ),
+			)
+		);
+
+	}
+
+	/**
+	 * @return array
+	 */
 	public static function getAgressionQuestions( $section=1 )
 	{
 		switch ( $section )

@@ -213,7 +213,12 @@ if ( $make_new_entry )
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_SERVICES ) { ?>
 
-		<?php $pet = $entry->getPets()[ $entry->getCurrentPet() ]; ?>
+		<?php
+
+		$pet = $entry->getPets()[ $entry->getCurrentPet() ];
+		$categories = $pet->getPricingQuestions();
+
+		?>
 
 		<h2>
 			Services for
@@ -222,124 +227,17 @@ if ( $make_new_entry )
 
 		<p>Please selected the services that you are interested in for your pet:</p>
 
-		<?php if ( $pet->getType() == \NitroK9\Pet::TYPE_LARGE_DOG ) { ?>
-
-			<h2>Nitro Dog Training</h2>
-
-			<?php if ( $pet->isAggressive() ) { ?>
-
-				<?php
-
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_AGGRESSIVE_EVAL ], $pet );
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_AGGRESSIVE_HOURLY ], $pet );
-				
-				?>
-
-			<?php } else { ?>
-
-				<?php
-
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_STANDARD_EVAL ], $pet );
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_STANDARD_HOURLY ], $pet );
-
-				?>
-
-			<?php } ?>
-
+		<?php foreach ( $categories as $category => $price_groups ) { ?>
+			<h2><?php echo $category; ?></h2>
 			<?php
 
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_ON_1 ], $pet );
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_ON_2 ], $pet );
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_LG_HANDS_OFF_1 ], $pet );
+			foreach ( $price_groups as $price_group )
+			{
+				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ $price_group ], $pet );
+			}
 
 			?>
-
-		<?php } elseif ( $pet->getType() == \NitroK9\Pet::TYPE_SMALL_DOG ) { ?>
-
-			<h2>Mini Heroes Training</h2>
-
-			<?php if ( $pet->isAggressive() ) { ?>
-
-				<?php
-
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_AGGRESSIVE_EVAL ], $pet );
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_AGGRESSIVE_HOURLY ], $pet );
-
-				?>
-
-			<?php } else { ?>
-
-				<?php
-
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_STANDARD_EVAL ], $pet );
-				\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_STANDARD_HOURLY ], $pet );
-
-				?>
-
-			<?php } ?>
-
-			<?php
-
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_ON_1 ], $pet );
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_ON_2 ], $pet );
-			\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_SM_HANDS_OFF_1 ], $pet );
-
-			?>
-
-
 		<?php } ?>
-
-		<h2>Boarding</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOARDING_PER_NIGHT ], $pet );
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOARDING_NIGHTS ], $pet );
-
-		?>
-
-		<h2>Board &amp; Train</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_BOOT_CAMP ], $pet );
-
-		?>
-
-		<h2>Pet Sitting</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::PET_SITTING ], $pet );
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::PET_SITTING_VISITS ], $pet );
-
-		?>
-
-		<h2>Doggie Day Care</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_DAY_CARE ], $pet );
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_DAY_CARE_PACKAGES ], $pet );
-
-		?>
-
-		<h2>Dog Walking</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_WALKING ], $pet );
-
-		?>
-
-		<h2>Personal Protection (Ring of Fire)</h2>
-
-		<?php
-
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_PERSONAL_PROTECTION_HOURLY ], $pet );
-		\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ \NitroK9\PriceGroup::DOG_PERSONAL_PROTECTION ], $pet );
-
-		?>
 
 	<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_AGGRESSION ) { ?>
 
@@ -352,7 +250,7 @@ if ( $make_new_entry )
 
 		<p>Please answer the following questions to the best of your ability:</p>
 
-		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 1 ); ?>
+		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 1 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 
@@ -381,7 +279,7 @@ if ( $make_new_entry )
 			What percent of the time does your dog obey the following commands for each member of the family?
 		</h2>
 
-		<?php $commands = \NitroK9\Pet::getAgressionQuestions( 2 ); ?>
+		<?php $commands = \NitroK9\Pet::getAggressionQuestions( 2 ); ?>
 
 		<table class="table table-bordered table-striped">
 			<thead>
@@ -411,7 +309,7 @@ if ( $make_new_entry )
 			<?php } ?>
 		</table>
 
-		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 3 ); ?>
+		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 3 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 
@@ -448,7 +346,7 @@ if ( $make_new_entry )
 			'no' => 'No Reaction',
 			'na' => 'N/A'
 		);
-		$causes = \NitroK9\Pet::getAgressionQuestions( 4 );
+		$causes = \NitroK9\Pet::getAggressionQuestions( 4 );
 
 		?>
 
@@ -475,7 +373,7 @@ if ( $make_new_entry )
 			<?php } ?>
 		</table>
 
-		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 5 ); ?>
+		<?php $categories = \NitroK9\Pet::getAggressionQuestions( 5 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 

@@ -335,13 +335,100 @@ class Pet {
 				array( 'anything_else', 'Anything else you would like to share?', FALSE, $this->getInfoItem( 'anything_else' ), 'textarea' ),
 			)
 		);
-
 	}
 
 	/**
 	 * @return array
 	 */
-	public static function getAgressionQuestions( $section=1 )
+	public function getPricingQuestions()
+	{
+		$categories = array();
+
+		if ( $this->type == self::TYPE_LARGE_DOG )
+		{
+			if ( $this->isAggressive() )
+			{
+				$categories['Nitro Dog Training'] = array(
+					PriceGroup::DOG_LG_AGGRESSIVE_EVAL,
+					PriceGroup::DOG_LG_AGGRESSIVE_HOURLY
+				);
+			}
+			else
+			{
+				$categories['Nitro Dog Training'] = array(
+					PriceGroup::DOG_LG_STANDARD_EVAL,
+					PriceGroup::DOG_LG_STANDARD_HOURLY
+				);
+			}
+
+			$categories['Nitro Dog Training'][] = PriceGroup::DOG_LG_HANDS_ON_1;
+			$categories['Nitro Dog Training'][] = PriceGroup::DOG_LG_HANDS_ON_2;
+			$categories['Nitro Dog Training'][] = PriceGroup::DOG_LG_HANDS_OFF_1;
+		}
+		else
+		{
+			if ( $this->isAggressive() )
+			{
+				$categories['Mini Heroes Training'] = array(
+					PriceGroup::DOG_SM_AGGRESSIVE_EVAL,
+					PriceGroup::DOG_SM_AGGRESSIVE_HOURLY
+				);
+			}
+			else
+			{
+				$categories['Mini Heroes Training'] = array(
+					PriceGroup::DOG_SM_STANDARD_EVAL,
+					PriceGroup::DOG_SM_STANDARD_HOURLY
+				);
+			}
+
+			$categories['Mini Heroes'][] = PriceGroup::DOG_SM_HANDS_ON_1;
+			$categories['Mini Heroes'][] = PriceGroup::DOG_SM_HANDS_ON_2;
+			$categories['Mini Heroes'][] = PriceGroup::DOG_SM_HANDS_OFF_1;
+		}
+
+		$categories['Boarding'] = array(
+			PriceGroup::DOG_BOARDING_PER_NIGHT,
+			PriceGroup::DOG_BOARDING_NIGHTS
+		);
+
+		$categories['Board and Train'] = array(
+			PriceGroup::DOG_BOOT_CAMP
+		);
+
+		$categories['Pet Sitting'] = array(
+			PriceGroup::PET_SITTING,
+			PriceGroup::PET_SITTING_VISITS
+		);
+
+		$categories['Doggie Day Care'] = array(
+			PriceGroup::DOG_DAY_CARE,
+			PriceGroup::DOG_DAY_CARE_PACKAGES
+		);
+		
+		$categories['Dog Walking'] = array(
+			PriceGroup::DOG_WALKING
+		);
+
+		$categories['Personal Protection (Ring of Fire)'] = array(
+			PriceGroup::DOG_PERSONAL_PROTECTION_HOURLY,
+			PriceGroup::DOG_PERSONAL_PROTECTION
+		);
+		
+		foreach ( $categories as $category => $price_groups )
+		{
+			
+		}
+		
+		return $categories;
+	}
+
+	/**
+	 * @param int $section
+	 *
+	 * @return array
+	 */
+	public static function getAggressionQuestions( $section=1 )
 	{
 		switch ( $section )
 		{

@@ -119,15 +119,15 @@ if ( $make_new_entry )
 
 		$questions = $owner->getInfoQuestions( 1 );
 
-		foreach ( $questions as $array )
+		foreach ( $questions as $question )
 		{
 			\NitroK9\Entry::drawFormRow(
-				$array[0],
-				$array[1],
-				$array[2],
-				$array[3],
-				( isset( $array[4] ) ) ? $array[4] : 'text',
-				( isset( $array[5] ) ) ? $array[5] : array()
+				$questions[0],
+				$questions[1],
+				$questions[2],
+				$questions[3],
+				( isset( $questions[4] ) ) ? $questions[4] : 'text',
+				( isset( $questions[5] ) ) ? $questions[5] : array()
 			);
 		}
 
@@ -139,15 +139,15 @@ if ( $make_new_entry )
 
 			$questions = $owner->getInfoQuestions( 2 );
 
-			foreach ( $questions as $array )
+			foreach ( $questions as $question )
 			{
 				\NitroK9\Entry::drawFormRow(
-					$array[0],
-					$array[1],
-					$array[2],
-					$array[3],
-					( isset( $array[4] ) ) ? $array[4] : 'text',
-					( isset( $array[5] ) ) ? $array[5] : array()
+					$questions[0],
+					$questions[1],
+					$questions[2],
+					$questions[3],
+					( isset( $questions[4] ) ) ? $questions[4] : 'text',
+					( isset( $questions[5] ) ) ? $questions[5] : array()
 				);
 			}
 
@@ -195,15 +195,15 @@ if ( $make_new_entry )
 
 			<?php
 
-			foreach ( $questions as $array )
+			foreach ( $questions as $question )
 			{
 				\NitroK9\Entry::drawFormRow(
-					$array[0],
-					$array[1],
-					$array[2],
-					$array[3],
-					( isset( $array[4] ) ) ? $array[4] : 'text',
-					( isset( $array[5] ) ) ? $array[5] : array()
+					$question[0],
+					$question[1],
+					$question[2],
+					$question[3],
+					( isset( $question[4] ) ) ? $question[4] : 'text',
+					( isset( $question[5] ) ) ? $question[5] : array()
 				);
 			}
 

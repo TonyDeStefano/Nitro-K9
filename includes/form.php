@@ -383,7 +383,37 @@ if ( $make_new_entry )
 
 		<?php } ?>
 
-		<p>[OBEY COMMANDS SECTION]</p>
+		<h2>
+			What percent of the time does your dog obey the following commands for each member of the family?
+		</h2>
+
+		<?php $commands = \NitroK9\Pet::getAgressionQuestions( 2 ); ?>
+
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<?php foreach ( $commands as $key => $command ) { ?>
+						<th><?php echo $command; ?></th>
+					<?php } ?>
+				</tr>
+			</thead>
+			<?php for ( $x=1; $x<=10; $x++ ) { ?>
+				<tr>
+					<?php foreach ( $commands as $key => $command ) { ?>
+						<td>
+							<input
+								class="form-control"
+								name="percent_<?php echo $x; ?>_<?php echo $key; ?>"
+								value="<?php echo esc_html( $pet->getAggressionItem( 'percent_'.$x.'_'.$key ) ); ?>"
+								<?php if ( $key != 'name' ) { ?>
+									style="max-width:70px"
+								<?php } ?>
+							>
+						</td>
+					<?php } ?>
+				</tr>
+			<?php } ?>
+		</table>
 
 		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 3 ); ?>
 

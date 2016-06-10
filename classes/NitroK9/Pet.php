@@ -515,7 +515,14 @@ class Pet {
 
 			case 2:
 
-
+				return array(
+					'name' => 'Family Member Name',
+					'sit' => 'Sit',
+					'down' => 'Down',
+					'stay' => 'Stay',
+					'come' => 'Come',
+					'heel' => 'Heel'
+				);
 			
 			case 3:
 

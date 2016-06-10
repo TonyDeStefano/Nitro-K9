@@ -358,7 +358,98 @@ if ( $make_new_entry )
 
 		<p>Please answer the following questions to the best of your ability:</p>
 
-		<?php $categories = \NitroK9\Pet::getAgressionQuestions(); ?>
+		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 1 ); ?>
+
+		<?php foreach ( $categories as $category => $questions ) { ?>
+
+			<h2><?php echo $category; ?></h2>
+
+			<?php
+
+			foreach ( $questions as $question )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$question[1],
+					$question[0],
+					FALSE,
+					$pet->getAggressionItem( $question[1] ),
+					( isset( $question[2] ) ) ? $question[2] : 'textarea',
+					( isset( $question[3] ) ) ? $question[3] : array(),
+					TRUE
+				);
+			}
+
+			?>
+
+		<?php } ?>
+
+		<p>[OBEY COMMANDS SECTION]</p>
+
+		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 3 ); ?>
+
+		<?php foreach ( $categories as $category => $questions ) { ?>
+
+			<h2><?php echo $category; ?></h2>
+
+			<?php
+
+			foreach ( $questions as $question )
+			{
+				\NitroK9\Entry::drawFormRow(
+					$question[1],
+					$question[0],
+					FALSE,
+					$pet->getAggressionItem( $question[1] ),
+					( isset( $question[2] ) ) ? $question[2] : 'textarea',
+					( isset( $question[3] ) ) ? $question[3] : array(),
+					TRUE
+				);
+			}
+
+			?>
+
+		<?php } ?>
+
+		<h2>Aggression Screen</h2>
+		<p>Check all that apply:</p>
+
+		<?php
+
+		$responses = array(
+			'growl' => 'Growl',
+			'snarl' => 'Snarl / Bare Teeth',
+			'snap' => 'Snap / Bite',
+			'no' => 'No Reaction',
+			'na' => 'N/A'
+		);
+		$causes = \NitroK9\Pet::getAgressionQuestions( 4 );
+
+		?>
+
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Action</th>
+					<?php foreach ( $responses as $key => $response ) { ?>
+						<th><?php echo $response; ?></th>
+					<?php } ?>
+				</tr>
+			</thead>
+			<?php foreach ( $causes as $index => $cause ) { ?>
+				<tr>
+					<th><?php echo $cause; ?></th>
+					<?php foreach ( $responses as $key => $response ) { ?>
+						<td style="text-align:center">
+							<label>
+								<input type="checkbox" value="1" name="screen_<?php echo $index; ?>_<?php echo $key; ?>"<?php if ( strlen( $pet->getAggressionItem( 'screen_'.$index.'_'.$key ) ) ) { ?> checked<?php } ?> >
+							</label>
+						</td>
+					<?php } ?>
+				</tr>
+			<?php } ?>
+		</table>
+
+		<?php $categories = \NitroK9\Pet::getAgressionQuestions( 5 ); ?>
 
 		<?php foreach ( $categories as $category => $questions ) { ?>
 

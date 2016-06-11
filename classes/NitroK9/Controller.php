@@ -107,7 +107,7 @@ class Controller {
 		$charset_collate = '';
 		if ( ! empty( $wpdb->charset ) )
 		{
-			$charset_collate .= "DEFAULT CHARACTER SET " . $wpdb->charset;
+			$charset_collate .= " DEFAULT CHARACTER SET " . $wpdb->charset;
 		}
 		if ( ! empty( $wpdb->collate ) )
 		{
@@ -115,46 +115,41 @@ class Controller {
 		}
 
 		$table = $wpdb->prefix . Entry::TABLE_NAME;
-		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
-			$sql = "
-				CREATE TABLE `" . $table . "`
-				(
-					`id` INT(11) NOT NULL AUTO_INCREMENT,
-					`step` VARCHAR(50) DEFAULT NULL,
-					`first_name` VARCHAR(50) DEFAULT NULL,
-					`last_name` VARCHAR(50) DEFAULT NULL,
-					`email` VARCHAR(50) DEFAULT NULL,
-					`address` VARCHAR(50) DEFAULT NULL,
-					`city` VARCHAR(50) DEFAULT NULL,
-					`state` VARCHAR(2) DEFAULT NULL,
-					`zip` VARCHAR(10) DEFAULT NULL,
-					`home_phone` VARCHAR(50) DEFAULT NULL,
-					`cell_phone` VARCHAR(50) DEFAULT NULL,
-					`work_phone` VARCHAR(50) DEFAULT NULL,
-					`em_contact` VARCHAR(50) DEFAULT NULL,
-					`em_relationship` VARCHAR(50) DEFAULT NULL,
-					`em_home_phone` VARCHAR(50) DEFAULT NULL,
-					`em_cell_phone` VARCHAR(50) DEFAULT NULL,
-					`em_work_phone` VARCHAR(50) DEFAULT NULL,
-					`how_heard` VARCHAR(50) DEFAULT NULL,
-					`pets` TEXT DEFAULT NULL,
-					`large_dogs` INT(11) DEFAULT NULL,
-					`small_dogs` INT(11) DEFAULT NULL,
-					`additional_owners` TEXT DEFAULT NULL,
-					`current_step` VARCHAR(50) DEFAULT NULL,
-					`current_pet` INT(11) DEFAULT NULL,
-					`current_owner` INT(11) DEFAULT NULL,
-					`created_at` DATETIME DEFAULT NULL,
-					`updated_at` DATETIME DEFAULT NULL,
-					`completed_at` DATETIME DEFAULT NULL,
-					PRIMARY KEY  (`id`),
-					KEY `email` (`email`),
-					KEY `step` (`step`)
-					
-				)";
-			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
-			dbDelta( $sql );
-		}
+		$sql = "CREATE TABLE " . $table . " (
+				id INT(11) NOT NULL AUTO_INCREMENT,
+				step VARCHAR(50) DEFAULT NULL,
+				first_name VARCHAR(255) DEFAULT NULL,
+				last_name VARCHAR(255) DEFAULT NULL,
+				email VARCHAR(255) DEFAULT NULL,
+				address VARCHAR(255) DEFAULT NULL,
+				city VARCHAR(255) DEFAULT NULL,
+				state VARCHAR(255) DEFAULT NULL,
+				zip VARCHAR(255) DEFAULT NULL,
+				home_phone VARCHAR(255) DEFAULT NULL,
+				cell_phone VARCHAR(255) DEFAULT NULL,
+				work_phone VARCHAR(255) DEFAULT NULL,
+				em_contact VARCHAR(255) DEFAULT NULL,
+				em_relationship VARCHAR(255) DEFAULT NULL,
+				em_home_phone VARCHAR(255) DEFAULT NULL,
+				em_cell_phone VARCHAR(255) DEFAULT NULL,
+				em_work_phone VARCHAR(255) DEFAULT NULL,
+				how_heard VARCHAR(255) DEFAULT NULL,
+				pets TEXT DEFAULT NULL,
+				large_dogs INT(11) DEFAULT NULL,
+				small_dogs INT(11) DEFAULT NULL,
+				additional_owners TEXT DEFAULT NULL,
+				current_step VARCHAR(255) DEFAULT NULL,
+				current_pet INT(11) DEFAULT NULL,
+				current_owner INT(11) DEFAULT NULL,
+				created_at DATETIME DEFAULT NULL,
+				updated_at DATETIME DEFAULT NULL,
+				completed_at DATETIME DEFAULT NULL,
+				PRIMARY KEY  (id),
+				KEY email (email),
+				KEY current_step (current_step)
+			)";
+		$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+		dbDelta( $sql );
 	}
 
 	/**

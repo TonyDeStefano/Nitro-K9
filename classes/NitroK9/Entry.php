@@ -1179,7 +1179,7 @@ class Entry {
 
 			case 'email':
 
-				echo '<input type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
+				echo '<input maxlength="255" type="email" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
 				break;
 
 			case 'textarea':
@@ -1189,7 +1189,7 @@ class Entry {
 
 			default:
 
-				echo '<input name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
+				echo '<input maxlength="255" name="' . $name . '" id="' . $uniqid . '" class="form-control" value="' . ( ( isset( $_POST[ $name ] ) ) ? htmlspecialchars( $_POST[ $name ] ) : htmlspecialchars( $default_value ) ) . '">';
 		}
 
         echo '
@@ -1817,6 +1817,9 @@ class Entry {
 					array( 'em_work_phone', 'Work Phone', FALSE, $this->getEmWorkPhone() ),
 					array( 'em_cell_phone', 'Cell Phone', FALSE, $this->getEmCellPhone() )
 				);
+
+			default:
+				return array();
 		}
 	}
 }

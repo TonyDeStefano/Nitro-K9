@@ -122,12 +122,12 @@ if ( $make_new_entry )
 		foreach ( $questions as $question )
 		{
 			\NitroK9\Entry::drawFormRow(
-				$questions[0],
-				$questions[1],
-				$questions[2],
-				$questions[3],
-				( isset( $questions[4] ) ) ? $questions[4] : 'text',
-				( isset( $questions[5] ) ) ? $questions[5] : array()
+				$question[0],
+				$question[1],
+				$question[2],
+				$question[3],
+				( isset( $question[4] ) ) ? $question[4] : 'text',
+				( isset( $question[5] ) ) ? $question[5] : array()
 			);
 		}
 
@@ -142,12 +142,12 @@ if ( $make_new_entry )
 			foreach ( $questions as $question )
 			{
 				\NitroK9\Entry::drawFormRow(
-					$questions[0],
-					$questions[1],
-					$questions[2],
-					$questions[3],
-					( isset( $questions[4] ) ) ? $questions[4] : 'text',
-					( isset( $questions[5] ) ) ? $questions[5] : array()
+					$question[0],
+					$question[1],
+					$question[2],
+					$question[3],
+					( isset( $question[4] ) ) ? $question[4] : 'text',
+					( isset( $question[5] ) ) ? $question[5] : array()
 				);
 			}
 
@@ -650,7 +650,7 @@ if ( $make_new_entry )
 					<i class="fa fa-chevron-right"></i>
 				</button>
 			<?php } ?>
-			<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_BIO || $entry->getCurrentStep() == \NitroK9\Entry::STEP_OWNER ) { ?>
+			<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_BIO && count( $entry->getOwners() ) == 0 ) { ?>
 				<button class="btn btn-default" name="add_owner">
 					<i class="fa fa-plus"></i>
 					Add Another Owner

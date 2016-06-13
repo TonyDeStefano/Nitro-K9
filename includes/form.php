@@ -275,39 +275,43 @@ if ( $make_new_entry )
 
 		<?php } ?>
 
-		<h2>
-			What percent of the time does your dog obey the following commands for each member of the family?
-		</h2>
+		<div class="hidden-xs">
 
-		<?php $commands = $pet->getAggressionQuestions( 2 ); ?>
+			<h2>
+				What percent of the time does your dog obey the following commands for each member of the family?
+			</h2>
 
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<?php foreach ( $commands as $key => $command ) { ?>
-						<th><?php echo $command; ?></th>
-					<?php } ?>
-				</tr>
-			</thead>
-			<?php for ( $x=1; $x<=10; $x++ ) { ?>
-				<tr>
-					<?php foreach ( $commands as $key => $command ) { ?>
-						<td>
-							<label>
-								<input
-									class="form-control"
-									name="percent_<?php echo $x; ?>_<?php echo $key; ?>"
-									value="<?php echo esc_html( $pet->getAggressionItem( 'percent_'.$x.'_'.$key ) ); ?>"
-									<?php if ( $key != 'name' ) { ?>
-										style="max-width:70px"
-									<?php } ?>
-								>
-							</label>
-						</td>
-					<?php } ?>
-				</tr>
-			<?php } ?>
-		</table>
+			<?php $commands = $pet->getAggressionQuestions( 2 ); ?>
+
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<?php foreach ( $commands as $key => $command ) { ?>
+							<th><?php echo $command; ?></th>
+						<?php } ?>
+					</tr>
+				</thead>
+				<?php for ( $x=1; $x<=10; $x++ ) { ?>
+					<tr>
+						<?php foreach ( $commands as $key => $command ) { ?>
+							<td>
+								<label>
+									<input
+										class="form-control"
+										name="percent_<?php echo $x; ?>_<?php echo $key; ?>"
+										value="<?php echo esc_html( $pet->getAggressionItem( 'percent_'.$x.'_'.$key ) ); ?>"
+										<?php if ( $key != 'name' ) { ?>
+											style="max-width:70px"
+										<?php } ?>
+									>
+								</label>
+							</td>
+						<?php } ?>
+					</tr>
+				<?php } ?>
+			</table>
+
+		</div>
 
 		<?php $categories = $pet->getAggressionQuestions( 3 ); ?>
 
@@ -334,44 +338,48 @@ if ( $make_new_entry )
 
 		<?php } ?>
 
-		<h2>Aggression Screen</h2>
-		<p>Check all that apply:</p>
+		<div class="hidden-xs">
 
-		<?php
+			<h2>Aggression Screen</h2>
+			<p>Check all that apply:</p>
 
-		$responses = array(
-			'growl' => 'Growl',
-			'snarl' => 'Snarl / Bare Teeth',
-			'snap' => 'Snap / Bite',
-			'no' => 'No Reaction',
-			'na' => 'N/A'
-		);
-		$causes = $pet->getAggressionQuestions( 4 );
+			<?php
 
-		?>
+			$responses = array(
+				'growl' => 'Growl',
+				'snarl' => 'Snarl / Bare Teeth',
+				'snap' => 'Snap / Bite',
+				'no' => 'No Reaction',
+				'na' => 'N/A'
+			);
+			$causes = $pet->getAggressionQuestions( 4 );
 
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Action</th>
-					<?php foreach ( $responses as $key => $response ) { ?>
-						<th><?php echo $response; ?></th>
-					<?php } ?>
-				</tr>
-			</thead>
-			<?php foreach ( $causes as $index => $cause ) { ?>
-				<tr>
-					<th><?php echo $cause; ?></th>
-					<?php foreach ( $responses as $key => $response ) { ?>
-						<td style="text-align:center">
-							<label>
-								<input type="checkbox" value="1" name="screen_<?php echo $index; ?>_<?php echo $key; ?>"<?php if ( strlen( $pet->getAggressionItem( 'screen_'.$index.'_'.$key ) ) ) { ?> checked<?php } ?> >
-							</label>
-						</td>
-					<?php } ?>
-				</tr>
-			<?php } ?>
-		</table>
+			?>
+
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Action</th>
+						<?php foreach ( $responses as $key => $response ) { ?>
+							<th><?php echo $response; ?></th>
+						<?php } ?>
+					</tr>
+				</thead>
+				<?php foreach ( $causes as $index => $cause ) { ?>
+					<tr>
+						<th><?php echo $cause; ?></th>
+						<?php foreach ( $responses as $key => $response ) { ?>
+							<td style="text-align:center">
+								<label>
+									<input type="checkbox" value="1" name="screen_<?php echo $index; ?>_<?php echo $key; ?>"<?php if ( strlen( $pet->getAggressionItem( 'screen_'.$index.'_'.$key ) ) ) { ?> checked<?php } ?> >
+								</label>
+							</td>
+						<?php } ?>
+					</tr>
+				<?php } ?>
+			</table>
+
+		</div>
 
 		<?php $categories = $pet->getAggressionQuestions( 5 ); ?>
 

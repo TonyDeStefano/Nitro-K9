@@ -519,7 +519,7 @@ class Pet {
 							'select',
 							array( '' => '', 'City/Town' => 'City/Town', 'Suburbs' => 'Suburbs', 'Rural' => 'Rural' )
 						),
-						array( 'Please describe your home:', 'describe_home' ),
+						array( 'Please describe your home (house/apartment, yard, square footage, etc.):', 'describe_home' ),
 						array(
 							'Have you moved since acquiring your dog?',
 							'have_moved',
@@ -592,7 +592,7 @@ class Pet {
 					),
 					'Diet and Feeding' => array(
 						array(
-							'Please describe, with specifics (e.g. brand name), what you feed your dog:',
+							'What do you feed your dog? Please be specific (brand name, etc.):',
 							'describe_food'
 						),
 						array( 'Please describe any changes to your dog\'s appetite:', 'change_in_appetite' ),
@@ -602,7 +602,7 @@ class Pet {
 					),
 					'Daily Schedule' => array(
 						array(
-							'Please describe, with detail, a typical 24-hour day in your dog\'s life:',
+							'Please describe in detail a typical 24-hour day in your dog\'s life:',
 							'day_in_the_life'
 						),
 						array( 'How does the dog behave with familiar visitors?', 'familiar_visitors' ),
@@ -677,9 +677,13 @@ class Pet {
 						array( 'Who in the family is the primary trainer?', 'primary_trainer' ),
 						array( 'What, if any, awards or titles has your dog won?', 'awards_titles' ),
 						array(
-							'Has your dog had any hunting, herding, protection, attack or Schutzhund training, if so where when, with who?',
+							'Has your dog had any hunting, herding, protection, attack, or Schutzhund training? If so when, and with whom?',
 							'hunting_herding'
 						),
+						array(
+							'Is there anything else we should know about your dog?',
+							'anything_else'
+						)
 					),
 				);
 				

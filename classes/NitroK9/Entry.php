@@ -2098,7 +2098,7 @@ class Entry {
 										}
 										if ( $show )
 										{
-											echo '<tr>';
+											$html .= '<tr>';
 											foreach ( $commands as $key => $command )
 											{
 												$html .= '<td>' . $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) . '</td>';

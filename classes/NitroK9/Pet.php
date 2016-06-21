@@ -533,7 +533,7 @@ class Pet {
 							'select',
 							array( '' => '', 'Yes' => 'Yes', 'No' => 'No' )
 						),
-						array( 'If Yes, Please Describe:', 'describe_change' ),
+						array( 'If Yes, please describe:', 'describe_change' ),
 					),
 					'Background' => array(
 						array( 'Why did you decide to get a dog?', 'why_decide' ),

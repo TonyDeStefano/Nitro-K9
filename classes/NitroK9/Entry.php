@@ -1234,6 +1234,26 @@ class Entry {
 	}
 
 	/**
+	 * @param $label
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public static function returnConfirmationRow( $label, $value )
+	{
+		if ( strlen( $value ) > 0 )
+		{
+			return '
+				<tr>
+					<th>' . $label . '</th>
+					<td>' . $value . '</td>
+				</tr>';
+		}
+
+		return '';
+	}
+
+	/**
 	 * @param PriceGroup $price_group
 	 * @param Pet $pet
 	 */
@@ -1346,6 +1366,56 @@ class Entry {
 
 		echo '
 			</div>';
+	}
+
+	/**
+	 * @param PriceGroup $price_group
+	 * @param Pet $pet
+	 *
+	 * @return string
+	 */
+	public static function returnConfirmationPriceRow( &$price_group, &$pet )
+	{
+		$return = '
+			<tr>
+				<th>' . $price_group->getTitle() . '</th>';
+
+		foreach( $price_group->getPrices() as $index => $price )
+		{
+			$value = $pet->getServicesItem( 'price_' . $price_group->getId() );
+
+			if ( strlen( $value ) > 0 && $value == $index )
+			{
+				if ( $price_group->getPriceCount() > 1 )
+				{
+					$return .= '
+							<td></td>
+						</tr>
+						<tr>
+							<td class="skinny"> 
+					            &raquo; ' . $price->getTitle() . '
+					        </td>';
+				}
+
+				$return .= '<td>';
+
+				if ( $price->getPrice() > 0 )
+				{
+					$return .= '$' . number_format( $price->getPrice(), 2 );
+				}
+				else
+				{
+					$return .= 'X';
+				}
+
+				$return .= '</td>';
+
+			}
+		}
+
+		$return .= '</tr>';
+
+		return $return;
 	}
 
 	public function nextStep()
@@ -1837,5 +1907,293 @@ class Entry {
 			default:
 				return array();
 		}
+	}
+
+	/**
+	 * @param Controller $controller
+	 *
+	 * @return string
+	 */
+	public function getNotificationEmail( &$controller )
+	{
+		$html = '';
+		
+		if ( $this->id !== NULL )
+		{
+			$html = '
+				<style>
+					table { width: 100%; border-collapse: collapse; }
+					td { padding: 5px; width: 65%; }
+					td.skinny { width: 35%; }
+					td.full { width: 35%; }
+					td.full th,
+					td.full td { width: 18%; }
+					th { padding: 5px; text-align: left; }
+					th.heading { background: #EEE; width: 100%; }
+				</style>
+
+				<p>Dear Steve,</p>
+				<p>A new sign-up form has been submitted by ' . $this->getFullName() . ' (' . $this->getEmail() . ').</p>
+				<h2>Information About ' . $this->getFirstName() . '</h2>
+				<table border="1">
+					<tr>
+						<th>Submitted On</th>
+						<td>' . $this->getCompletedAt( 'l - F j, Y' ) . '</td>
+					</tr>';
+
+			$questions = array_merge( $this->getInfoQuestions( 1 ), $this->getInfoQuestions( 2 ) );
+
+			foreach ( $questions as $array )
+			{
+				$html .= self::returnConfirmationRow(
+					$array[1],
+					$array[3]
+				);
+			}
+
+			$html .= '
+				</table>';
+
+			foreach ( $this->getOwners() as $owner )
+			{
+				$html .= '
+					<h2>Information About ' . $owner->getInfoItem( 'first_name' ) . '</h2>
+					<table border="1">';
+
+				$questions = array_merge( $owner->getInfoQuestions( 1 ), $owner->getInfoQuestions( 2 ) );
+
+				foreach ( $questions as $array )
+				{
+					$html .= self::returnConfirmationRow(
+						$array[1],
+						$array[3]
+					);
+				}
+
+				$html .= '</table>';
+			}
+
+			foreach ( $this->getPets() as $pet )
+			{
+				$html .= '
+					<h2>Info About ' . $pet->getInfoItem( 'name' ) . '</h2>
+					<table border="1">';
+
+				$categories = $pet->getInfoQuestions( TRUE );
+
+				foreach ( $categories as $category => $questions )
+				{
+					if ( strlen( $category ) > 0 )
+					{
+						$html .= '
+							<tr>
+								<th colspan="2" class="heading">' . strtoupper( $category ) . '</th>
+							</tr>';
+					}
+
+					foreach ( $questions as $array )
+					{
+						$html .= self::returnConfirmationRow(
+							$array[1],
+							( $array[0] == 'is_aggressive' ) ? ( $pet->isAggressive() ) ? 'Yes' : 'No' : $array[3]
+						);
+					}
+				}
+
+				$html .= '</table>';
+			}
+			
+			foreach ( $this->getPets() as $pet )
+			{
+				$html .= '
+					<h2>Services for ' . $pet->getInfoItem( 'name' ) . '</h2>
+					<table border="1">';
+
+				$categories = $pet->getPricingQuestions( TRUE );
+
+				foreach ( $categories as $category => $price_groups )
+				{
+					foreach( $price_groups as $price_group )
+					{
+						$html .= self::returnConfirmationPriceRow( $controller->price_groups[ $price_group ], $pet );
+					}
+				}
+
+				$html .= '</table>';
+			}
+
+			foreach ( $this->getPets() as $pet )
+			{
+				if ( $pet->isAggressive() )
+				{
+					$html .= '
+						<h2>Aggression Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
+						<table border="1">';
+
+					for ( $section=1; $section<=5; $section++ )
+					{
+						switch( $section )
+						{
+							case 1:
+							case 3:
+							case 5:
+
+								$categories = $pet->getAggressionQuestions( $section, TRUE );
+
+								foreach ( $categories as $category => $questions )
+								{
+									$html .= '
+										<tr>
+											<th class="heading" colspan="2">' . $category . '</th>
+										</tr>';
+
+									foreach ( $questions as $question )
+									{
+										$html .= self::returnConfirmationRow(
+											$question[0],
+											$pet->getAggressionItem( $question[1] )
+										);
+									}
+								}
+
+								break;
+
+							case 2:
+
+								if ( $pet->hasPercentAnswers() )
+								{
+									$html .= '
+										<tr>
+											<th class="heading" colspan="2">
+												What percent of the time does your dog obey the following commands for each member of the family?
+											</th>
+										</tr>';
+
+									$commands = $pet->getAggressionQuestions( $section );
+
+									$html .= '
+										<tr>
+											<td colspan="2" class="full">
+
+												<table border="1">
+													<thead>
+														<tr>';
+									foreach ( $commands as $key => $command )
+									{
+										$html .= '<th>' . $command . '</th>';
+									}
+									$html .= '
+												</tr>
+											</thead>';
+									for ( $x=1; $x<=10; $x++ )
+									{
+										$show = FALSE;
+										foreach ( $commands as $key => $commmand )
+										{
+											if ( strlen( $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) ) > 0 )
+											{
+												$show = TRUE;
+												break;
+											}
+										}
+										if ( $show )
+										{
+											echo '<tr>';
+											foreach ( $commands as $key => $command )
+											{
+												$html .= '<td>' . $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) . '</td>';
+											}
+											$html .= '</tr>';
+										}
+									}
+									$html .= '
+											</table>
+										</td>
+									</tr>';
+								}
+
+								break;
+
+							case 4:
+
+								if ( $pet->hasScreenAnswers() )
+								{
+									$html .= '
+										<tr>
+											<th class="heading" colspan="2">
+												AGGRESSION SCREEN
+											</th>
+										</tr>';
+
+									$responses = array(
+										'growl' => 'Growl',
+										'snarl' => 'Snarl / Bare Teeth',
+										'snap' => 'Snap / Bite',
+										'no' => 'No Reaction',
+										'na' => 'N/A'
+									);
+
+									$causes = $pet->getAggressionQuestions( $section );
+
+									$html .=
+										'<tr>
+											<td colspan="2" class="full">
+									
+												<table border="1">
+													<thead>
+														<tr>
+															<th>Action</th>';
+									foreach ( $responses as $key => $response )
+									{
+										$html .= '<th>' .  $response . '</th>';
+									}
+									$html .= '
+												</tr>
+											</thead>';
+									foreach ( $causes as $index => $cause )
+									{
+										$show = FALSE;
+										foreach ( $responses as $key => $response )
+										{
+											if ( strlen( $pet->getAggressionItem( 'screen_' . $index . '_' . $key ) ) > 0 )
+											{
+												$show = TRUE;
+												break;
+											}
+										}
+										if ( $show )
+										{
+											$html .= '
+													<tr>
+														<th>' . $cause . '</th>';
+											foreach ( $responses as $key => $response )
+											{
+												$html .= '<td style="text-align:center">';
+												if ( strlen( $pet->getAggressionItem( 'screen_' . $index . '_' . $key ) ) )
+												{
+													$html .= 'X';
+												}
+												$html .= '</td>';
+											}
+											$html .= '</tr>';
+										}
+									}
+									$html .= '
+											</table>
+										</td>
+									</tr>';
+								}
+
+								break;
+						}
+					}
+
+					$html .= '</table>';
+				}
+			}
+
+		}
+		
+		return $html;
 	}
 }

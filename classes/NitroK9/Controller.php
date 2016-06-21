@@ -542,6 +542,47 @@ class Controller {
 							->setAggressionItemsFromPost();
 
 						break;
+
+					case Entry::STEP_CONFIRM:
+
+						$posts = get_posts( array(
+							'post_type' => 'nitro_k9_ty_email',
+							'post_status' => 'publish',
+							'numberposts' => -1
+						) );
+
+						if ( count( $posts ) > 0 )
+						{
+							foreach ( $posts as $post )
+							{
+								$meta = get_post_meta( $post->ID, 'nitro_k9_active_email', TRUE );
+								if ( $meta == 1 )
+								{
+									@wp_mail (
+										$entry->getEmail(), 
+										'Nitro K-9 Form Sign Up Form',
+										'<p>Dear ' . $entry->getFirstName() . ',</p>' . $post->post_content,
+										array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
+									);
+									break;
+								}
+							}
+						}
+
+						$entry->complete();
+
+						@wp_mail (
+							'Steve Walter <steve@nitrocanine.com>',
+							'Nitro K-9 Form Sign Up Form',
+							'<p>Dear Steve,</p><p>A new sign-up form has been submitted by ' . $entry->getFullName() . ' (' . $entry->getEmail() . '). Please check the website for details.</p>',
+							array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
+						);
+
+						$requests[] = 'complete=true';
+						header( 'Location:' . $page . '?' . implode( '&', $requests ) );
+						exit;
+
+						break;
 						
 				}
 

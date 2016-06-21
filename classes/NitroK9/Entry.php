@@ -227,6 +227,13 @@ class Entry {
 			}
 		}
 	}
+	
+	public function complete()
+	{
+		$this
+			->setCompletedAt( time() )
+			->update();
+	}
 
 	public function update()
 	{
@@ -420,6 +427,14 @@ class Entry {
 		$this->last_name = $last_name;
 
 		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFullName()
+	{
+		return $this->getFirstName() . ' ' . $this->getLastName();
 	}
 
 	/**
@@ -1121,7 +1136,8 @@ class Entry {
 			FROM
 				" . $wpdb->prefix . self::TABLE_NAME . "
 			WHERE
-				email = %s",
+				email = %s
+				AND completed_at IS NULL",
 			$email
 		);
 

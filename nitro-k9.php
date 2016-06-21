@@ -69,5 +69,4 @@ if (is_admin() )
 	add_action( 'save_post', array( $nitro_k9_controller, 'save_ty_email_post' ) );
 	add_filter( 'manage_nitro_k9_ty_email_posts_columns', array( $nitro_k9_controller, 'add_new_columns' ) );
 	add_action( 'manage_posts_custom_column' , array( $nitro_k9_controller, 'custom_columns' ) );
-
 }

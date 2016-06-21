@@ -545,6 +545,8 @@ class Controller {
 
 					case Entry::STEP_CONFIRM:
 
+						add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ) );
+
 						$posts = get_posts( array(
 							'post_type' => 'nitro_k9_ty_email',
 							'post_status' => 'publish',
@@ -577,6 +579,8 @@ class Controller {
 							'<p>Dear Steve,</p><p>A new sign-up form has been submitted by ' . $entry->getFullName() . ' (' . $entry->getEmail() . '). Please check the website for details.</p>',
 							array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
 						);
+
+						remove_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ) );
 
 						$requests[] = 'complete=true';
 						header( 'Location:' . $page . '?' . implode( '&', $requests ) );
@@ -637,6 +641,11 @@ class Controller {
 				exit;
 			}
 		}
+	}
+
+	function set_content_type( $content_type )
+	{
+		return 'text/html';
 	}
 
 	/**

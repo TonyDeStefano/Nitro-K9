@@ -644,29 +644,30 @@ class Controller {
 	 */
 	public function admin_menus()
 	{
-		add_menu_page('Nitro K9', 'Nitro K9', 'manage_options', 'nitro_k9', array( $this, 'pricing_page' ), 'dashicons-star-filled');
-		add_submenu_page('nitro_k9', 'Pricing', 'Pricing', 'manage_options', 'nitro_k9');
-		add_submenu_page('nitro_k9', 'Short Code', 'Short Code', 'manage_options', 'nitro_k9_shortcode', array($this, 'short_code_page'));
-		//add_submenu_page('nitro_k9', 'Cruise Entries', 'Cruise Entries', 'manage_options', 'outspokane_cruise', array($this, 'showCruiseEntries'));
-
-		/* I guess this is how to add a page without adding a menu */
-		//add_submenu_page(NULL, 'Edit Entry', 'Edit Entry', 'manage_options', 'outspokane_edit_entry', array($this, 'editEntry'));
+		add_menu_page( 'Nitro K9', 'Nitro K9', 'manage_options', 'nitro_k9', array( $this, 'pricing_page' ), 'dashicons-star-filled' );
+		add_submenu_page( 'nitro_k9', 'Pricing', 'Pricing', 'manage_options', 'nitro_k9' );
+		add_submenu_page( 'nitro_k9', 'Short Code', 'Short Code', 'manage_options', 'nitro_k9_shortcode', array( $this, 'short_code_page' ) );
+		add_submenu_page( 'nitro_k9', 'Submissions', 'Submissions', 'manage_options', 'nitro_k9_submissions', array( $this, 'show_submissions' ) );
 	}
-
-	/**
-	 *
-	 */
+	
 	public function short_code_page()
 	{
 		include( dirname( dirname( __DIR__ ) ) . '/includes/shortcode.php');
 	}
 	
-	/**
-	 *
-	 */
 	public function pricing_page()
 	{
 		include( dirname( dirname( __DIR__ ) ) . '/includes/pricing.php');
+	}
+
+	public function show_submissions()
+	{
+		include( dirname( dirname( __DIR__ ) ) . '/includes/submissions.php');
+	}
+
+	public function view_submission()
+	{
+		include( dirname( dirname( __DIR__ ) ) . '/includes/submissions.php');
 	}
 
 	public function register_settings()

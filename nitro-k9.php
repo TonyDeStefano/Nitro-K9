@@ -32,6 +32,7 @@ require_once ( 'classes/NitroK9/Price.php' );
 require_once ( 'classes/NitroK9/Entry.php' );
 require_once ( 'classes/NitroK9/Pet.php' );
 require_once ( 'classes/NitroK9/Owner.php' );
+require_once ( 'classes/NitroK9/SubmissionsTable.php' );
 
 $nitro_k9_controller = new \NitroK9\Controller;
 

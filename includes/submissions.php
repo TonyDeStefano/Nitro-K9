@@ -2,11 +2,6 @@
 
 	<?php if ( isset( $_GET['action'] ) && $_GET['action'] == 'view' ) { ?>
 
-		<h1>
-			View Submission
-			<a href="?page=nitro_k9_submissions" class="page-title-action">Back</a>
-		</h1>
-
 		<?php
 
 		$id = ( isset( $_GET['id'] ) && is_numeric( $_GET['id'] ) ) ? intval( $_GET['id'] ) : NULL;
@@ -16,11 +11,23 @@
 
 		<?php if ( $entry->getId() === NULL ) { ?>
 
+			<h1>
+				Submission Not Found
+				<a href="?page=nitro_k9_submissions" class="page-title-action">Back</a>
+			</h1>
+
 			<div class="alert alert-danger">
 				The submission you are trying to view is not currently available.
 			</div>
 
 		<?php } else { ?>
+
+
+			<h1>
+				View Submission
+				<a href="?page=nitro_k9_submissions" class="page-title-action">Back</a>
+				<a href="#" class="page-title-action delete-nitro-k9-submission" data-id="<?php echo $entry->getId(); ?>">Delete</a>
+			</h1>
 
 			<?php if ( $entry->getCompletedAt() === NULL ) { ?>
 				<div class="alert alert-danger">
@@ -285,6 +292,27 @@
 				</a>
 			<?php } ?>
 		</h1>
+
+		<?php if ( isset( $_GET['delete'] ) ) { ?>
+
+			<?php
+
+			$id = ( isset( $_GET['delete'] ) && is_numeric( $_GET['delete'] ) ) ? intval( $_GET['delete'] ) : NULL;
+			$entry = new \NitroK9\Entry( $id );
+
+			?>
+
+			<?php if ( $entry->getId() !== NULL ) { ?>
+
+				<?php $entry->delete(); ?>
+
+				<div class="alert alert-info">
+					Submission has been deleted.
+				</div>
+
+			<?php } ?>
+
+		<?php } ?>
 
 		<?php
 

@@ -5,6 +5,14 @@ var nitro_ids;
 
     $(function(){
 
+        $('.delete-nitro-k9-submission').click(function(e){
+            e.preventDefault();
+            var b = confirm('Are you sure you want to delete this submission?')
+            if (b){
+                window.location = 'admin.php?page=nitro_k9_submissions&delete='+$(this).data('id');
+            }
+        });
+
         $('#nitro-k9-pricing-submit').click(function(e){
 
             e.preventDefault();

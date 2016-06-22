@@ -118,7 +118,9 @@ class SubmissionsTable extends \WP_List_Table {
 		else
 		{
 			$sql .= "
-				ORDER BY id DESC";
+				ORDER BY 
+					completed_at DESC,
+					id DESC";
 		}
 
 		$total_items = $wpdb->query($sql);

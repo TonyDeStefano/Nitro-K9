@@ -562,7 +562,7 @@ class Controller {
 								{
 									@wp_mail (
 										$entry->getEmail(), 
-										'Nitro K-9 Form Sign Up Form',
+										'Nitro K-9 Sign-Up',
 										'<p>Dear ' . $entry->getFirstName() . ',</p>' . $post->post_content,
 										array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
 									);
@@ -575,7 +575,7 @@ class Controller {
 
 						@wp_mail (
 							'Steve Walter <steve@nitrocanine.com>',
-							'Nitro K-9 Form Sign Up Form',
+							'Nitro K-9 Form Submission',
 							$entry->getNotificationEmail( $this ),
 							array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
 						);

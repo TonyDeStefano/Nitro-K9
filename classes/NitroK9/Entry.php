@@ -1245,8 +1245,8 @@ class Entry {
 		{
 			return '
 				<tr>
-					<th>' . $label . '</th>
-					<td>' . $value . '</td>
+					<th style="padding:5px; text-align:left">' . $label . '</th>
+					<td style="padding:5px; width:65%">' . $value . '</td>
 				</tr>';
 		}
 
@@ -1378,7 +1378,7 @@ class Entry {
 	{
 		$return = '
 			<tr>
-				<th>' . $price_group->getTitle() . '</th>';
+				<th style="padding:5px; text-align:left">' . $price_group->getTitle() . '</th>';
 
 		foreach( $price_group->getPrices() as $index => $price )
 		{
@@ -1392,12 +1392,12 @@ class Entry {
 							<td></td>
 						</tr>
 						<tr>
-							<td class="skinny"> 
+							<td style="padding:5px; width:35%"> 
 					            &raquo; ' . $price->getTitle() . '
 					        </td>';
 				}
 
-				$return .= '<td>';
+				$return .= '<td style="padding:5px; width:65%">';
 
 				if ( $price->getPrice() > 0 )
 				{
@@ -1935,10 +1935,10 @@ class Entry {
 				<p>Dear Steve,</p>
 				<p>A new sign-up form has been submitted by ' . $this->getFullName() . ' (' . $this->getEmail() . ').</p>
 				<h2>Information About ' . $this->getFirstName() . '</h2>
-				<table border="1">
+				<table border="1" style="width:100%; border-collapse:collapse">
 					<tr>
-						<th>Submitted On</th>
-						<td>' . $this->getCompletedAt( 'l - F j, Y' ) . '</td>
+						<th style="padding:5px; text-align:left">Submitted On</th>
+						<td style="padding:5px; width:65%">' . $this->getCompletedAt( 'l - F j, Y' ) . '</td>
 					</tr>';
 
 			$questions = array_merge( $this->getInfoQuestions( 1 ), $this->getInfoQuestions( 2 ) );
@@ -1958,7 +1958,7 @@ class Entry {
 			{
 				$html .= '
 					<h2>Information About ' . $owner->getInfoItem( 'first_name' ) . '</h2>
-					<table border="1">';
+					<table border="1" style="width:100%; border-collapse:collapse">';
 
 				$questions = array_merge( $owner->getInfoQuestions( 1 ), $owner->getInfoQuestions( 2 ) );
 
@@ -1977,7 +1977,7 @@ class Entry {
 			{
 				$html .= '
 					<h2>Info About ' . $pet->getInfoItem( 'name' ) . '</h2>
-					<table border="1">';
+					<table border="1" style="width:100%; border-collapse:collapse">';
 
 				$categories = $pet->getInfoQuestions( TRUE );
 
@@ -1987,7 +1987,7 @@ class Entry {
 					{
 						$html .= '
 							<tr>
-								<th colspan="2" class="heading">' . strtoupper( $category ) . '</th>
+								<th colspan="2" style="background:#EEE; text-align:left; padding:5px">' . strtoupper( $category ) . '</th>
 							</tr>';
 					}
 
@@ -2007,7 +2007,7 @@ class Entry {
 			{
 				$html .= '
 					<h2>Services for ' . $pet->getInfoItem( 'name' ) . '</h2>
-					<table border="1">';
+					<table border="1" style="width:100%; border-collapse:collapse">';
 
 				$categories = $pet->getPricingQuestions( TRUE );
 
@@ -2028,7 +2028,7 @@ class Entry {
 				{
 					$html .= '
 						<h2>Aggression Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
-						<table border="1">';
+						<table border="1" style="width:100%; border-collapse:collapse">';
 
 					for ( $section=1; $section<=5; $section++ )
 					{
@@ -2044,7 +2044,7 @@ class Entry {
 								{
 									$html .= '
 										<tr>
-											<th class="heading" colspan="2">' . $category . '</th>
+											<th colspan="2" style="background:#EEE; text-align:left; padding:5px">' . $category . '</th>
 										</tr>';
 
 									foreach ( $questions as $question )
@@ -2064,7 +2064,7 @@ class Entry {
 								{
 									$html .= '
 										<tr>
-											<th class="heading" colspan="2">
+											<th colspan="2" style="background:#EEE; text-align:left; padding:5px">
 												What percent of the time does your dog obey the following commands for each member of the family?
 											</th>
 										</tr>';
@@ -2073,14 +2073,14 @@ class Entry {
 
 									$html .= '
 										<tr>
-											<td colspan="2" class="full">
+											<td colspan="2" style="padding:5px">
 
-												<table border="1">
+												<table border="1" style="width:100%; border-collapse:collapse">
 													<thead>
 														<tr>';
 									foreach ( $commands as $key => $command )
 									{
-										$html .= '<th>' . $command . '</th>';
+										$html .= '<th style="padding:5px">' . $command . '</th>';
 									}
 									$html .= '
 												</tr>
@@ -2101,7 +2101,7 @@ class Entry {
 											$html .= '<tr>';
 											foreach ( $commands as $key => $command )
 											{
-												$html .= '<td>' . $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) . '</td>';
+												$html .= '<td style="padding:5px; text-align:center">' . $pet->getAggressionItem( 'percent_' . $x . '_' . $key ) . '</td>';
 											}
 											$html .= '</tr>';
 										}
@@ -2120,7 +2120,7 @@ class Entry {
 								{
 									$html .= '
 										<tr>
-											<th class="heading" colspan="2">
+											<th colspan="2" style="padding:5px; background:#EEE">
 												AGGRESSION SCREEN
 											</th>
 										</tr>';
@@ -2137,15 +2137,15 @@ class Entry {
 
 									$html .=
 										'<tr>
-											<td colspan="2" class="full">
+											<td colspan="2" style="padding:5px">
 									
-												<table border="1">
+												<table border="1" style="width:100%; border-collapse:collapse">
 													<thead>
 														<tr>
-															<th>Action</th>';
+															<th style="padding:5px; text-align:left">Action</th>';
 									foreach ( $responses as $key => $response )
 									{
-										$html .= '<th>' .  $response . '</th>';
+										$html .= '<th style="padding:5px">' .  $response . '</th>';
 									}
 									$html .= '
 												</tr>
@@ -2165,10 +2165,10 @@ class Entry {
 										{
 											$html .= '
 													<tr>
-														<th>' . $cause . '</th>';
+														<th style="padding:5px; text-align:left">' . $cause . '</th>';
 											foreach ( $responses as $key => $response )
 											{
-												$html .= '<td style="text-align:center">';
+												$html .= '<td style="text-align:center; padding:5px">';
 												if ( strlen( $pet->getAggressionItem( 'screen_' . $index . '_' . $key ) ) )
 												{
 													$html .= 'X';

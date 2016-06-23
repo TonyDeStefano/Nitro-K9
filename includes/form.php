@@ -236,15 +236,41 @@ if ( $make_new_entry )
 			<p>Please selected the services that you are interested in for your pet:</p>
 
 			<?php foreach ( $categories as $category => $price_groups ) { ?>
-				<h2><?php echo $category; ?></h2>
+
 				<?php
 
+				$show = FALSE;
 				foreach ( $price_groups as $price_group )
 				{
-					\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ $price_group ], $pet );
+					if ( $this->price_groups[ $price_group ]->isActive() )
+					{
+						foreach ( $this->price_groups[ $price_group ]->getPrices() as $price )
+						{
+							if ( $price->isActive() )
+							{
+								$show = TRUE;
+								break;
+							}
+						}
+					}
 				}
 
 				?>
+
+				<?php if ( $show ) { ?>
+
+					<h2><?php echo $category; ?></h2>
+					<?php
+
+					foreach ( $price_groups as $price_group )
+					{
+						\NitroK9\Entry::drawFormPriceRow( $this->price_groups[ $price_group ], $pet );
+					}
+
+					?>
+
+				<?php } ?>
+
 			<?php } ?>
 
 		<?php } elseif ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_PET_AGGRESSION ) { ?>

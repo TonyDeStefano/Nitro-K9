@@ -360,6 +360,14 @@ class Controller {
 							{
 								$this->addError( 'Please enter a valid email address' );
 							}
+							elseif ( strlen( trim( $_POST['home_phone'] ) . trim( $_POST['work_phone'] ) . trim( $_POST['cell_phone'] ) ) == 0 )
+							{
+								$this->addError( 'Please enter at least one phone number' );
+							}
+							elseif ( strlen( trim( $_POST['em_home_phone'] ) . trim( $_POST['em_work_phone'] ) . trim( $_POST['em_cell_phone'] ) ) == 0 )
+							{
+								$this->addError( 'Please enter at least one emergency contact phone number' );
+							}
 						}
 						
 						if ( $this->getErrorCount() == 0 )

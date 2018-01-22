@@ -288,6 +288,8 @@ class Controller {
 	{
 		if ( isset( $_POST['nitro_k9_id'] ) && isset( $_POST['nitro_k9_hash'] ) )
 		{
+			$_POST = array_map( 'stripslashes_deep', $_POST );
+
 			$referrer = $_POST['_wp_http_referer'];
 			$parts = explode( '?', $referrer );
 			$page = $parts[0];

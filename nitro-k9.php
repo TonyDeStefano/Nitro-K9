@@ -2,14 +2,12 @@
 
 /**
  * Plugin Name: Nitro K9
- * Plugin URI: https://www.spokanewp.com/portfolio
- * Description: A custom plugin for NitroK9.com
- * Author: Spokane WordPress Development
- * Author URI: http://www.spokanewp.com
- * Version: 1.0.0
+ * Description: Sign Up Form for NitroK9.com
+ * Author: Tony DStefano
+ * Version: 1.1.0
  * Text Domain: nitro-k9
  *
- * Copyright 2016 Spokane WordPress Development
+ * Copyright 2016 Tony DeStefano
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as

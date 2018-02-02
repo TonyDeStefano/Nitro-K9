@@ -1665,13 +1665,29 @@ class Entry {
 				}
 				else
 				{
-					return 'Aggression QA for ' . $this->getPets()[ $this->getPriorAggressiveNumber() ]->getInfoItem( 'name' );
+				    if ( $this->getPets()[ $this->getPriorAggressiveNumber() ]->isAggressive() )
+                    {
+                        $a = 'Aggression';
+                    }
+                    else
+                    {
+                        $a = 'Anxiety';
+                    }
+					return $a . ' QA for ' . $this->getPets()[ $this->getPriorAggressiveNumber() ]->getInfoItem( 'name' );
 				}
 
 			case self::STEP_CONFIRM:
 				if ( $this->getAggressiveCount() > 0 )
 				{
-					return 'Aggression QA for ' . $this->getPets()[ $this->getLastAggressiveNumber() ]->getInfoItem( 'name' );
+                    if ( $this->getPets()[ $this->getLastAggressiveNumber() ]->isAggressive() )
+                    {
+                        $a = 'Aggression';
+                    }
+                    else
+                    {
+                        $a = 'Anxiety';
+                    }
+					return $a . ' QA for ' . $this->getPets()[ $this->getLastAggressiveNumber() ]->getInfoItem( 'name' );
 				}
 				else
 				{
@@ -1748,7 +1764,15 @@ class Entry {
 				{
 					if ( $this->getAggressiveCount() > 0 )
 					{
-						return 'Aggression QA for ' . $this->getPets()[ $this->getFirstAggressiveNumber() ]->getInfoItem( 'name' );
+                        if ( $this->getPets()[ $this->getFirstAggressiveNumber() ]->isAggressive() )
+                        {
+                            $a = 'Aggression';
+                        }
+                        else
+                        {
+                            $a = 'Anxiety';
+                        }
+						return $a . ' QA for ' . $this->getPets()[ $this->getFirstAggressiveNumber() ]->getInfoItem( 'name' );
 					}
 					else
 					{
@@ -1767,7 +1791,15 @@ class Entry {
 				}
 				else
 				{
-					return 'Aggression QA for ' . $this->getPets()[ $this->getNextAggressiveNumber() ]->getInfoItem( 'name' );
+                    if ( $this->getPets()[ $this->getNextAggressiveNumber() ]->isAggressive() )
+                    {
+                        $a = 'Aggression';
+                    }
+                    else
+                    {
+                        $a = 'Anxiety';
+                    }
+					return $a . ' QA for ' . $this->getPets()[ $this->getNextAggressiveNumber() ]->getInfoItem( 'name' );
 				}
 
 		}
@@ -1806,7 +1838,7 @@ class Entry {
 
 		foreach ( $this->getPets() as $pet )
 		{
-			if ( $pet->isAggressive() )
+			if ( $pet->isAggressive() || $pet->isAnxious() )
 			{
 				$count++;
 			}
@@ -1824,7 +1856,7 @@ class Entry {
 
 		foreach ( $this->getPets() as $index => $pet )
 		{
-			if ( $pet->isAggressive() )
+			if ( $pet->isAggressive() || $pet->isAnxious() )
 			{
 				$numbers[] = $index;
 			}
@@ -1993,9 +2025,20 @@ class Entry {
 
 					foreach ( $questions as $array )
 					{
+                        $answer = $array[3];
+
+                        if ( $array[0] == 'is_aggressive' )
+                        {
+                            $answer = ( $pet->isAggressive() ) ? 'Yes' : 'No';
+                        }
+                        elseif( $array[0] == 'is_anxious' )
+                        {
+                            $answer = ( $pet->isAnxious() ) ? 'Yes' : 'No';
+                        }
+
 						$html .= self::returnConfirmationRow(
 							$array[1],
-							( $array[0] == 'is_aggressive' ) ? ( $pet->isAggressive() ) ? 'Yes' : 'No' : $array[3]
+							$answer
 						);
 					}
 				}
@@ -2024,10 +2067,10 @@ class Entry {
 
 			foreach ( $this->getPets() as $pet )
 			{
-				if ( $pet->isAggressive() )
+				if ( $pet->isAggressive() || $pet->isAnxious() )
 				{
 					$html .= '
-						<h2>Aggression Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
+						<h2>' . ( ( $pet->isAggressive() ) ? 'Aggression' : 'Anxiety' ) . ' Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
 						<table border="1" style="width:100%; border-collapse:collapse">';
 
 					for ( $section=1; $section<=5; $section++ )

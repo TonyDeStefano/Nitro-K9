@@ -72,7 +72,7 @@ class SubmissionsTable extends \WP_List_Table {
 				$return = array();
 				foreach ( $entry->getPets() as $pet )
 				{
-					$return[] = $pet->getInfoItem( 'name' ) . ' ( ' . ( ( $pet->getType() == Pet::TYPE_LARGE_DOG ) ? 'Large' : 'Small' ) . ( ( $pet->isAggressive() ) ? ' / Aggressive' : '' ) . ' )';
+					$return[] = $pet->getInfoItem( 'name' ) . ' ( ' . ( ( $pet->getType() == Pet::TYPE_LARGE_DOG ) ? 'Large' : 'Small' ) . ( ( $pet->isAggressive() ) ? ' / Aggressive' : '' ) . ( ( $pet->isAnxious() ) ? ' / Anxious' : '' ) . ' )';
 				}
 				return implode( '<br>', $return );
 			case 'date':

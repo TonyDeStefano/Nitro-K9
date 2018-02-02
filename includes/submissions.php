@@ -97,9 +97,20 @@
 
 					foreach ( $questions as $array )
 					{
+                        $answer = $array[3];
+
+                        if ( $array[0] == 'is_aggressive' )
+                        {
+                            $answer = ( $pet->isAggressive() ) ? 'Yes' : 'No';
+                        }
+                        elseif( $array[0] == 'is_anxious' )
+                        {
+                            $answer = ( $pet->isAnxious() ) ? 'Yes' : 'No';
+                        }
+
 						\NitroK9\Entry::drawConfirmationRow(
 							$array[1],
-							( $array[0] == 'is_aggressive' ) ? ( $pet->isAggressive() ) ? 'Yes' : 'No' : $array[3]
+                            $answer
 						);
 					}
 				}
@@ -128,10 +139,10 @@
 
 			foreach ( $entry->getPets() as $pet )
 			{
-				if ( $pet->isAggressive() )
+				if ( $pet->isAggressive() || $pet->isAnxious() )
 				{
 					echo '
-						<h2>Aggression Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
+						<h2>' . ( ( $pet->isAggressive() ) ? 'Aggression' : 'Anxiety' ) . ' Questionnaire for ' . $pet->getInfoItem( 'name' ) . '</h2>
 						<div class="well">';
 
 					for ( $section=1; $section<=5; $section++ )

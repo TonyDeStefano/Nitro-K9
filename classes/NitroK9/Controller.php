@@ -4,7 +4,7 @@ namespace NitroK9;
 
 class Controller {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 	const VERSION_CSS = '1.0.2';
 	const VERSION_JS = '1.0.2';
 
@@ -535,6 +535,7 @@ class Controller {
 
 						$entry->getPets()[ $entry->getCurrentPet() ]
 							->setIsAggressive( ( $_POST['is_aggressive'] == 1 ) )
+                            ->setIsAnxious( ( $_POST['is_anxious'] == 1 ) )
 							->setInfoItemsFromPost();
 
 						break;

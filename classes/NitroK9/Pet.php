@@ -9,6 +9,7 @@ class Pet {
 	
 	private $type;
 	private $is_aggressive = FALSE;
+    private $is_anxious = FALSE;
 	private $info;
 	private $services;
 	private $aggression;
@@ -34,6 +35,11 @@ class Pet {
 				{
 					$this->setIsAggressive( $array['is_aggressive'] );
 				}
+
+                if ( isset( $array['is_anxious'] ) )
+                {
+                    $this->setIsAnxious( $array['is_anxious'] );
+                }
 
 				if ( isset( $array['type'] ) )
 				{
@@ -97,6 +103,26 @@ class Pet {
 
 		return $this;
 	}
+
+    /**
+     * @return boolean
+     */
+    public function isAnxious()
+    {
+        return ( $this->is_anxious === TRUE );
+    }
+
+    /**
+     * @param boolean $is_anxious
+     *
+     * @return Pet
+     */
+    public function setIsAnxious( $is_anxious )
+    {
+        $this->is_anxious = ( $is_anxious == 1 || $is_anxious === TRUE );
+
+        return $this;
+    }
 
 	/**
 	 * @param $item
@@ -289,6 +315,7 @@ class Pet {
 		return array(
 			'type' => $this->getType(),
 			'is_aggressive' => ( $this->is_aggressive ) ? 1 : 0,
+            'is_anxious' => ( $this->is_anxious ) ? 1 : 0,
 			'info' => $this->getInfo(),
 			'services' => $this->getServices(),
 			'aggression' => $this->getAggression()
@@ -311,7 +338,8 @@ class Pet {
 				array( 'dob', 'Date of Birth', FALSE, $this->getInfoItem( 'dob' ) ),
 				array( 'age', 'Age', FALSE, $this->getInfoItem( 'age' ) ),
 				array( 'weight', 'Weight', FALSE, $this->getInfoItem( 'weight' ) ),
-				array( 'is_aggressive', 'Aggressive?', TRUE, ( $this->isAggressive() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
+				array( 'is_aggressive', 'Is your dog displaying aggressive behaviors?', TRUE, ( $this->isAggressive() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
+                array( 'is_anxious', 'Is your dog displaying anxious behaviors?', TRUE, ( $this->isAnxious() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
 			),
 			'Identification' => array(
 				array( 'id_tag', 'ID Tag', FALSE, $this->getInfoItem( 'id_tag' ) ),

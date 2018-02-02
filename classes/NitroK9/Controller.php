@@ -574,7 +574,7 @@ class Controller {
 									@wp_mail (
 										$entry->getEmail(), 
 										'Nitro K-9 Sign-Up',
-										'<p>Dear ' . $entry->getFirstName() . ',</p>' . $post->post_content,
+										'<p>Dear ' . $entry->getFirstName() . ',</p>' . nl2br( $post->post_content ),
 										array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
 									);
 									break;

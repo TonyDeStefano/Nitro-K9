@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Nitro K9
  * Description: Sign Up Form for NitroK9.com
- * Author: Tony DStefano
+ * Author: Tony DeStefano
  * Version: 1.1.0
  * Text Domain: nitro-k9
  *

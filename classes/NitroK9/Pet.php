@@ -10,6 +10,7 @@ class Pet {
 	private $type;
 	private $is_aggressive = FALSE;
     private $is_anxious = FALSE;
+    private $is_fixed = FALSE;
 	private $info;
 	private $services;
 	private $aggression;
@@ -39,6 +40,11 @@ class Pet {
                 if ( isset( $array['is_anxious'] ) )
                 {
                     $this->setIsAnxious( $array['is_anxious'] );
+                }
+
+                if ( isset( $array['is_fixed'] ) )
+                {
+                    $this->setIsFixed( $array['is_fixed'] );
                 }
 
 				if ( isset( $array['type'] ) )
@@ -120,6 +126,26 @@ class Pet {
     public function setIsAnxious( $is_anxious )
     {
         $this->is_anxious = ( $is_anxious == 1 || $is_anxious === TRUE );
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFixed()
+    {
+        return ( $this->is_fixed === TRUE );
+    }
+
+    /**
+     * @param boolean $is_fixed
+     *
+     * @return Pet
+     */
+    public function setIsFixed( $is_fixed )
+    {
+        $this->is_fixed = ( $is_fixed == 1 || $is_fixed === TRUE );
 
         return $this;
     }
@@ -316,6 +342,7 @@ class Pet {
 			'type' => $this->getType(),
 			'is_aggressive' => ( $this->is_aggressive ) ? 1 : 0,
             'is_anxious' => ( $this->is_anxious ) ? 1 : 0,
+            'is_fixed' => ( $this->is_fixed ) ? 1 : 0,
 			'info' => $this->getInfo(),
 			'services' => $this->getServices(),
 			'aggression' => $this->getAggression()
@@ -340,6 +367,7 @@ class Pet {
 				array( 'weight', 'Weight', FALSE, $this->getInfoItem( 'weight' ) ),
 				array( 'is_aggressive', 'Is your dog displaying aggressive behaviors?', TRUE, ( $this->isAggressive() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
                 array( 'is_anxious', 'Is your dog displaying anxious behaviors?', TRUE, ( $this->isAnxious() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
+                array( 'is_fixed', 'Is your dog spayed or neutered?', TRUE, ( $this->isFixed() ) ? 1 : 0, 'select', array( 'No' => '0', 'Yes' => '1' ) ),
 			),
 			'Identification' => array(
 				array( 'id_tag', 'ID Tag', FALSE, $this->getInfoItem( 'id_tag' ) ),

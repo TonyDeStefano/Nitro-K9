@@ -536,6 +536,7 @@ class Controller {
 						$entry->getPets()[ $entry->getCurrentPet() ]
 							->setIsAggressive( ( $_POST['is_aggressive'] == 1 ) )
                             ->setIsAnxious( ( $_POST['is_anxious'] == 1 ) )
+                            ->setIsFixed( ( $_POST['is_fixed'] == 1 ) )
 							->setInfoItemsFromPost();
 
 						break;

@@ -107,6 +107,10 @@
                         {
                             $answer = ( $pet->isAnxious() ) ? 'Yes' : 'No';
                         }
+                        elseif( $array[0] == 'is_fixed' )
+                        {
+                            $answer = ( $pet->isFixed() ) ? 'Yes' : 'No';
+                        }
 
 						\NitroK9\Entry::drawConfirmationRow(
 							$array[1],

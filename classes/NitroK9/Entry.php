@@ -2035,6 +2035,10 @@ class Entry {
                         {
                             $answer = ( $pet->isAnxious() ) ? 'Yes' : 'No';
                         }
+                        elseif( $array[0] == 'is_fixed' )
+                        {
+                            $answer = ( $pet->isFixed() ) ? 'Yes' : 'No';
+                        }
 
 						$html .= self::returnConfirmationRow(
 							$array[1],

@@ -505,13 +505,17 @@ if ( $make_new_entry )
 					{
 					    $answer = $array[3];
 
-					    if ( $array[0] == 'is_aggressive' )
+                        if ( $array[0] == 'is_aggressive' )
                         {
                             $answer = ( $pet->isAggressive() ) ? 'Yes' : 'No';
                         }
                         elseif( $array[0] == 'is_anxious' )
                         {
                             $answer = ( $pet->isAnxious() ) ? 'Yes' : 'No';
+                        }
+                        elseif( $array[0] == 'is_fixed' )
+                        {
+                            $answer = ( $pet->isFixed() ) ? 'Yes' : 'No';
                         }
 
 						\NitroK9\Entry::drawConfirmationRow(

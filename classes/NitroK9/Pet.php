@@ -379,8 +379,9 @@ class Pet {
 				array( 'medication', 'Medication and Dosage', FALSE, $this->getInfoItem( 'medication' ), 'textarea' ),
 			),
 			'Feeding' => array(
-				array( 'food_provided_by', 'Food Provided By', FALSE, $this->getInfoItem( 'food_provided_by' ), 'select', array( 'Nitro K9' => 'Nitro K9', 'Client' => 'Client' ) ),
-				array( 'feed_instructions', 'Feeding Instructions', FALSE, $this->getInfoItem( 'feed_instructions' ), 'textarea' ),
+				array( 'food_eat', 'What kind of food does your dog eat?', TRUE, $this->getInfoItem( 'food_eat' ) ),
+				array( 'food_often', 'How often do you feed your dog?', TRUE, $this->getInfoItem( 'food_often' ) ),
+                array( 'food_allergies', 'Does your dog have any food allergies?', TRUE, $this->getInfoItem( 'food_allergies' ) ),
 			),
 			'Behavior' => array(
 				array( 'problems', 'List any problems your pet has with people, pets or situations', FALSE, $this->getInfoItem( 'problems' ), 'textarea' ),

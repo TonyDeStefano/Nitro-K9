@@ -557,49 +557,51 @@ class Controller {
 
 					case Entry::STEP_CONFIRM:
 
-						add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ) );
+                        if ( ! isset( $_POST['prior_step'] ) )
+                        {
+                            add_filter( 'wp_mail_content_type', array ( $this, 'set_content_type' ) );
 
-						$posts = get_posts( array(
-							'post_type' => 'nitro_k9_ty_email',
-							'post_status' => 'publish',
-							'numberposts' => -1
-						) );
+                            $posts = get_posts( array (
+                                'post_type' => 'nitro_k9_ty_email',
+                                'post_status' => 'publish',
+                                'numberposts' => - 1
+                            ) );
 
-						if ( count( $posts ) > 0 )
-						{
-							foreach ( $posts as $post )
-							{
-								$meta = get_post_meta( $post->ID, 'nitro_k9_active_email', TRUE );
-								if ( $meta == 1 )
-								{
-									@wp_mail (
-										$entry->getEmail(), 
-										'Nitro K-9 Sign-Up',
-										'<p>Dear ' . $entry->getFirstName() . ',</p>' . nl2br( $post->post_content ),
-										array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
-									);
-									break;
-								}
-							}
-						}
+                            if ( count( $posts ) > 0 )
+                            {
+                                foreach ( $posts as $post )
+                                {
+                                    $meta = get_post_meta( $post->ID, 'nitro_k9_active_email', TRUE );
+                                    if ( $meta == 1 )
+                                    {
+                                        @wp_mail(
+                                            $entry->getEmail(),
+                                            'Nitro K-9 Sign-Up',
+                                            '<p>Dear ' . $entry->getFirstName() . ',</p>' . nl2br( $post->post_content ),
+                                            array ( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
+                                        );
+                                        break;
+                                    }
+                                }
+                            }
 
-						$entry->complete();
+                            $entry->complete();
 
-						@wp_mail (
-							'Steve Walter <steve@nitrocanine.com>',
-							'Nitro K-9 Form Submission',
-							$entry->getNotificationEmail( $this ),
-							array( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
-						);
+                            @wp_mail(
+                                'Steve Walter <steve@nitrocanine.com>',
+                                'Nitro K-9 Form Submission',
+                                $entry->getNotificationEmail( $this ),
+                                array ( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
+                            );
 
-						remove_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ) );
+                            remove_filter( 'wp_mail_content_type', array ( $this, 'set_content_type' ) );
 
-						$requests[] = 'complete=true';
-						header( 'Location:' . $page . '?' . implode( '&', $requests ) );
-						exit;
+                            $requests[] = 'complete=true';
+                            header( 'Location:' . $page . '?' . implode( '&', $requests ) );
+                            exit;
+                        }
 
-						break;
-						
+                        break;
 				}
 
 				if ( $this->getErrorCount() == 0 )

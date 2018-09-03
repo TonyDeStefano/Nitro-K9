@@ -706,7 +706,7 @@ if ( $make_new_entry )
 		<div class="well clearfix nitro-k9-buttons">
 			<div class="pull-right">
 				<?php if ( $entry->getCurrentStep() == \NitroK9\Entry::STEP_CONFIRM ) { ?>
-					<button class="btn btn-default" name="prior_step">
+					<button class="btn btn-default" name="complete">
 						Complete Sign-Up
 					</button>
 				<?php } ?>

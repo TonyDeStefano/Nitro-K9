@@ -528,7 +528,7 @@ class Controller {
 								$entry->setPets( array_merge( $large_dogs, $small_dogs ) );
 							}
 						}
-						
+
 						break;
 					
 					case Entry::STEP_PET_INFO:
@@ -655,6 +655,12 @@ class Controller {
 				exit;
 			}
 		}
+
+		if ( isset( $_POST['name'] ) )
+        {
+            $_POST['resolving_conflict_name'] = $_POST['name'];
+            unset( $_POST['name'] );
+        }
 	}
 
 	function set_content_type( $content_type )

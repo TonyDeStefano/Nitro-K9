@@ -1,5 +1,11 @@
 <?php
 
+if ( isset( $_POST['resolving_conflict_name'] ) )
+{
+    $_POST['name'] = $_POST['resolving_conflict_name'];
+    unset( $_POST['resolving_conflict_name'] );
+}
+
 /** @var \NitroK9\Controller $this */
 
 $make_new_entry = TRUE;

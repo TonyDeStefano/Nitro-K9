@@ -12,3 +12,7 @@
 .nitro-k9-form .well h4:first-child {
     margin-top: 0;
 }
+
+.nitro-k9-form th {
+    color: #000 !important
+}

@@ -594,6 +594,13 @@ class Controller {
                                 array ( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
                             );
 
+                            @wp_mail(
+                                'Nitro K-9 Admin <admin@nitrocanine.com>',
+                                'Nitro K-9 Form Submission',
+                                $entry->getNotificationEmail( $this ),
+                                array ( 'from' => 'Nitro K9 <no-reply@nitrok9.com>' )
+                            );
+
                             remove_filter( 'wp_mail_content_type', array ( $this, 'set_content_type' ) );
 
                             $requests[] = 'complete=true';

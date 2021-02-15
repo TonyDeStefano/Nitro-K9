@@ -164,60 +164,26 @@ class PriceGroup {
 		$default_prices = array(
 			self::DOG_LG_AGGRESSIVE_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Aggressive Large Dog)',
-				'price' => 50
+				'price' => 75
 			),
 			self::DOG_LG_AGGRESSIVE_HOURLY => array(
 				'title' => 'Hourly Training Fee (Aggressive Large Dog)',
-				'price' => 125
+				'price' => 160
 			),
 			self::DOG_LG_STANDARD_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Standard Large Dog)',
-				'price' => 35
+				'price' => 75
 			),
 			self::DOG_LG_STANDARD_HOURLY => array(
 				'title' => 'Hourly Training Fee (Standard Large Dog)',
-				'price' => 125
+				'price' => 160
 			),
 			self::DOG_LG_HANDS_ON_1 => array(
 				'title' => 'Nitro Dog Hands On - Level 1',
 				'prices' => array(
 					array(
 						'title' => 'Three 1-Hour Lessons',
-						'price' => 240,
-					),
-					array(
-						'title' => 'Seven 1-Hour Lessons',
-						'price' => 550,
-					),
-					array(
-						'title' => 'Fourteen 1-Hour Lessons',
-						'price' => 1100,
-					)
-				)
-			),
-			self::DOG_LG_HANDS_ON_2 => array(
-				'title' => 'Nitro Dog Hands On - Level 2',
-				'prices' => array(
-					array(
-						'title' => 'Three 1-Hour Lessons',
-						'price' => 300,
-					),
-					array(
-						'title' => 'Seven 1-Hour Lessons',
-						'price' => 700,
-					),
-					array(
-						'title' => 'Fourteen 1-Hour Lessons',
-						'price' => 1200,
-					)
-				)
-			),
-			self::DOG_LG_HANDS_OFF_1 => array(
-				'title' => 'Nitro Dog Hands Off - Level 1',
-				'prices' => array(
-					array(
-						'title' => 'Three 1-Hour Lessons',
-						'price' => 300,
+						'price' => 400,
 					),
 					array(
 						'title' => 'Seven 1-Hour Lessons',
@@ -229,36 +195,70 @@ class PriceGroup {
 					)
 				)
 			),
+			self::DOG_LG_HANDS_ON_2 => array(
+				'title' => 'Nitro Dog Hands On - Level 2',
+				'prices' => array(
+					array(
+						'title' => 'Three 1-Hour Lessons',
+						'price' => 500,
+					),
+					array(
+						'title' => 'Seven 1-Hour Lessons',
+						'price' => 1000,
+					),
+					array(
+						'title' => 'Fourteen 1-Hour Lessons',
+						'price' => 1600,
+					)
+				)
+			),
+			self::DOG_LG_HANDS_OFF_1 => array(
+				'title' => 'Nitro Dog Hands Off - Level 1',
+				'prices' => array(
+					array(
+						'title' => 'Three 1-Hour Lessons',
+						'price' => 600,
+					),
+					array(
+						'title' => 'Seven 1-Hour Lessons',
+						'price' => 1400,
+					),
+					array(
+						'title' => 'Fourteen 1-Hour Lessons',
+						'price' => 2800,
+					)
+				)
+			),
 			self::DOG_SM_AGGRESSIVE_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Aggressive Small Dog)',
-				'price' => 50
+				'price' => 75
 			),
 			self::DOG_SM_AGGRESSIVE_HOURLY => array(
 				'title' => 'Hourly Training Fee (Aggressive Small Dog)',
-				'price' => 125
+				'price' => 160
 			),
 			self::DOG_SM_STANDARD_EVAL => array(
 				'title' => 'Standard Pre-Training Evaluation Fee (Standard Small Dog)',
-				'price' => 35
+				'price' => 75
 			),
 			self::DOG_SM_STANDARD_HOURLY => array(
 				'title' => 'Hourly Training Fee (Standard Small Dog)',
-				'price' => 125
+				'price' => 160
 			),
 			self::DOG_SM_HANDS_ON_1 => array(
 				'title' => 'Mini Heroes Hands On - Level 1',
 				'prices' => array(
 					array(
 						'title' => 'Three 30-Minute Lessons',
-						'price' => 200,
-					),
-					array(
-						'title' => 'Seven 30-Minute Lessons',
 						'price' => 300,
 					),
 					array(
+						'title' => 'Seven 30-Minute Lessons',
+						'price' => 400,
+					),
+					array(
 						'title' => 'Fourteen 30-Minute Lessons',
-						'price' => 550,
+						'price' => 800,
 					)
 				)
 			),
@@ -267,15 +267,15 @@ class PriceGroup {
 				'prices' => array(
 					array(
 						'title' => 'Three 30-Minute Lessons',
-						'price' => 220,
+						'price' => 325,
 					),
 					array(
 						'title' => 'Seven 30-Minute Lessons',
-						'price' => 350,
+						'price' => 500,
 					),
 					array(
 						'title' => 'Fourteen 30-Minute Lessons',
-						'price' => 650,
+						'price' => 1000,
 					)
 				)
 			),
@@ -284,21 +284,21 @@ class PriceGroup {
 				'prices' => array(
 					array(
 						'title' => 'Three 30-Minute Lessons',
-						'price' => 260,
+						'price' => 300,
 					),
 					array(
 						'title' => 'Seven 30-Minute Lessons',
-						'price' => 360,
+						'price' => 700,
 					),
 					array(
 						'title' => 'Fourteen 30-Minute Lessons',
-						'price' => 520,
+						'price' => 1400,
 					)
 				)
 			),
 			self::DOG_BOARDING_PER_NIGHT => array(
 				'title' => 'Boarding Per Night',
-				'price' => 50
+				'price' => 286
 			),
 			self::DOG_BOARDING_NIGHTS => array(
 				'title' => 'Boarding Nights',
@@ -351,7 +351,19 @@ class PriceGroup {
 					array(
 						'title' => '14 Nights',
 						'price' => 1350
-					)
+					),
+                    array(
+                        'title' => '4 Week Board and Train Program',
+                        'price' => 5000
+                    ),
+                    array(
+                        'title' => '5 Week Board and Train Program',
+                        'price' => 5500
+                    ),
+                    array(
+                        'title' => '6 Week Board and Train Program',
+                        'price' => 6000
+                    )
 				)
 			),
 			self::PET_SITTING => array(
